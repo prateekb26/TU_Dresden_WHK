@@ -1,19 +1,29 @@
 import urllib
+import glob
+import os
 
-def getURL():
-    link = "https://raw.githubusercontent.com/doflink/sconedocs/master/docs/C%2B%2B.md?token=ALZKBWER44JGY3VPN7CKTMS5ADOPKl"
-    f = urllib.urlopen(link)
-    rawContent = f.read().splitlines()
-    return rawContent
+def getAllFiles():
+    for filepath in glob.glob('sconedocs/docs/*.md'):
+        print filepath
+        head, filename = os.path.split(filepath)
+        filename=filename.replace(".md", "")
+        print filename
+        #Split lines
+        prepareContent=prepareFile(filepath)
+        #Give it for extraction
+        code=extractCode(prepareContent)
+        
+        #WriteContent to a file
+        f = open("bashCommands/"+filename+".sh", "w")
+        f.write(code)
+        f.close()
 
-def getPath():
-    path = "sconedocs/docs/C++.md"
+def prepareFile(path):
     f=open(path, "r")
     return f.read().splitlines()
 
-def extractCode():
+def extractCode(rawContent):
     code = ""
-    rawContent=getPath()
     count=0
     for i in rawContent:
         if (i.find("```") != -1):
@@ -30,8 +40,7 @@ def extractCode():
     return code
 
 def main():
-    code=extractCode()  
-    print code
+    getAllFiles()
      
 if __name__== "__main__":
   main()

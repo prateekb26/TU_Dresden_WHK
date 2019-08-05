@@ -1,8 +1,5 @@
-FROM ubuntu:16.04
+FROM sconecuratedimages/crosscompilers
 
-
-RUN apt-get update
-RUN apt-get -y install docker
 COPY script.sh /
-
+#CMD tail -f /dev/null
 CMD ["bash", "/script.sh"]
