@@ -1,0 +1,25 @@
+[package]
+name = "hello_cargo"
+version = "0.1.0"
+authors = ["prateekb"]
+edition = "2018"
+
+[dependencies]
+tempdir = "0.3"
+glob = "0.3"
+walkdir = "2.2"
+serde_json = "1.0"
+cargo_metadata = "0.7"
+bytecount = "0.5"
+
+[dev-dependencies]
+unindent = "0.1"
+
+[dependencies.error-chain]
+version = "0.12"
+default-features = false
+
+[dependencies.pulldown-cmark]
+version = "0.2"
+default-features = false
+
