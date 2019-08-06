@@ -1,6 +1,7 @@
 import urllib
 import glob
 import os
+import pexpect
 
 def getAllFiles():
     for filepath in glob.glob('sconedocs/docs/*.md'):
@@ -39,8 +40,20 @@ def extractCode(rawContent):
             count = count + 1
     return code
 
+def executeShell():
+    f=open('bashCommands/test.sh', "r")
+    for i in f.read().splitlines():
+        child = pexpect.spawn("docker pull sconecuratedimages/crosscompilers")
+        child = pexpect.spawn("docker run -it sconecuratedimages/crosscompilers")
+        child.sendline(i)
+        child.expect("ubuntu@ip-172-31-39-63:~")
+        # We can print child.before, which will contain everything before the last child.expect.
+        print(child.before)
+    
+
 def main():
     getAllFiles()
+    executeShell()
      
 if __name__== "__main__":
   main()
