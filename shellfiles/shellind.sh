@@ -1,7 +1,8 @@
-#!bin/bash
 
-scone g++ --help
-echo "next"
+$ scone g++ --help
+Usage: x86_64-linux-musl-g++ [options] file...
+Options:
+...
 cat > sqrt.cc << EOF
 #include <iostream>
 #include <cmath>
@@ -18,7 +19,5 @@ int main() {
     return 0;
 }
 EOF
-echo "next"
 scone g++ sqrt.cc -o sqrt
-echo "next"
 SCONE_VERSION=1 ./sqrt

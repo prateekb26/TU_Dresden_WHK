@@ -1,7 +1,21 @@
 import urllib
 import glob
 import os
-import pexpect
+import errno
+import re
+
+
+def createDirectory(dirName): 
+    try:
+    # Create target Directory
+        os.mkdir(dirName)
+        print("Directory " , dirName ,  " Created ") 
+    except OSError as e:
+        if e.errno == errno.EEXIST:
+            print("Directory " , dirName ,  " already exists")
+        else:
+            raise
+
 
 def getAllFiles():
     for filepath in glob.glob('sconedocs/docs/*.md'):
@@ -15,6 +29,7 @@ def getAllFiles():
         code=extractCode(prepareContent)
         
         #WriteContent to a file
+        createDirectory("bashCommands")
         f = open("bashCommands/"+filename+".sh", "w")
         f.write(code)
         f.close()
@@ -49,11 +64,35 @@ def executeShell():
         child.expect("ubuntu@ip-172-31-39-63:~")
         # We can print child.before, which will contain everything before the last child.expect.
         print(child.before)
+
+def createFiles():
+    f=open('bashCommands/C++.sh', "r")
+
+    createDirectory("shellfiles")
+    n = open("dfiles/DockerFileC++", "w")
+    s = open("shellfiles/shellind.sh", "w")
+    for i in f.read().splitlines():
+        if (i.find("docker pull") != -1):
+            m=re.search('docker pull\s+(.*)',i)
+            makeDockerFile(m.group(1))
+        if(i.find("docker") == -1):
+           s.write(i+"\n")
+    s.close()
+    n.close()
+
+def makeDockerFile(rep):
+    createDirectory("dfiles")
+    n = open("dfiles/DockerFileC++", "w")
+    n.write("FROM "+ rep+"\n")
+    n.write("COPY shellfiles/shellind.sh /"+"\n")
+    n.write("CMD [\"bash\", \"/shellind.sh\"]"+"\n")
+    n.close()
     
 
 def main():
     getAllFiles()
-    executeShell()
+    #executeShell()
+    createFiles()
      
 if __name__== "__main__":
   main()
