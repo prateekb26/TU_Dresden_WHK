@@ -1,3 +1,0 @@
-FROM sconecuratedimages/crosscompilers
-COPY shellfiles/shellind.sh /
-CMD ["bash", "/shellind.sh"]

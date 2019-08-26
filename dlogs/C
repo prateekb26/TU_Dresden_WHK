@@ -1,0 +1,24 @@
+/C.sh: line 2: $: command not found
+/C.sh: line 3: Usage:: command not found
+/C.sh: line 4: Options:: command not found
+/C.sh: line 5: ...: command not found
+export SCONE_QUEUES=4
+export SCONE_SLOTS=256
+export SCONE_SIGPIPE=0
+export SCONE_MMAP32BIT=0
+export SCONE_SSPINS=100
+export SCONE_SSLEEP=4000
+export SCONE_LOG=3
+export SCONE_HEAP=67108864
+export SCONE_STACK=2097152
+export SCONE_CONFIG=/etc/sgx-musl.conf
+export SCONE_ESPINS=10000
+export SCONE_MODE=sim
+export SCONE_ALLOW_DLOPEN=no 
+export SCONE_MPROTECT=no
+musl version: 1.1.20
+Revision: 587cd5f509ecb42535db7006874d80419d9f6ece (Mon Jun 17 10:33:31 2019 +0200)
+Branch: master
+
+Enclave hash: 47b46339fc0be4e986a5108f6cd52bd80f43039acd0399718229ffb626b88e60
+fib(23)= 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610, 987, 1597, 2584, 4181, 6765, 10946, 17711, 28657

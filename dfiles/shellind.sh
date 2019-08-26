@@ -1,1 +1,0 @@
-$ scone g++ --helpUsage: x86_64-linux-musl-g++ [options] file...Options:...cat > sqrt.cc << EOF#include <iostream>#include <cmath>using namespace std;int main() {    int x = 0;    while(x < 10) {        double y = sqrt((double)x);        cout << "The square root of " << x << " is " << y << endl;        x++;    }    return 0;}EOFscone g++ sqrt.cc -o sqrtSCONE_VERSION=1 ./sqrt

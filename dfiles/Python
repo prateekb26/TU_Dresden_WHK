@@ -1,0 +1,3 @@
+FROM sconecuratedimages/apps:python-2-alpine3.6
+COPY shellfiles/Python.sh /
+CMD ["bash", "/Python.sh"]
