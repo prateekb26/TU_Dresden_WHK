@@ -4,7 +4,20 @@ import os
 import errno
 import re
 import docker
+import shutil
+import time
 
+def setup():
+    createDirectory("bashCommands")
+    createDirectory("shellfiles")
+    createDirectory("dfiles")
+    createDirectory("dlogs")
+    
+def cleanup():
+    removeDirectory("bashCommands")
+    removeDirectory("shellfiles")
+    removeDirectory("dfiles")
+    removeDirectory("dlogs")
 #Function to create Directory if not existing
 def createDirectory(dirName): 
     try:
@@ -16,24 +29,31 @@ def createDirectory(dirName):
             print("Directory " , dirName ,  " already exists")
         else:
             raise
+        
+def removeDirectory(dirName):
+    try:
+        shutil.rmtree(dirName)
+    except OSError as e:
+        print ("Error: %s - %s." % (e.filename, e.strerror))
 
 #Function to get all .md files and create .sh files
 def getAllFiles():
     for filepath in glob.glob('sconedocs/docs/*.md'):
-        print filepath
+        #print filepath
         head, filename = os.path.split(filepath)
         filename=filename.replace(".md", "")
-        print filename
+        #print filename
         #Split lines
         prepareContent=prepareFile(filepath)
         #Give it for extraction
         code=extractCode(prepareContent)
-        
-        #WriteContent to a file
-        createDirectory("bashCommands")
-        f = open("bashCommands/"+filename+".sh", "w")
-        f.write(code)
-        f.close()
+        if (code):
+            #WriteContent to a file
+            f = open("bashCommands/"+filename+".sh", "w")
+            f.write(code)
+            f.close()
+        else:
+            print filename + ".md doesn't not contain any shell code hence no shell file will be generated"
 
 #Function to Read content to be read from .Md files
 def prepareFile(path):
@@ -68,7 +88,16 @@ def executeShell():
         child.expect("ubuntu@ip-172-31-39-63:~")
         # We can print child.before, which will contain everything before the last child.expect.
         print(child.before)
+    
+def getAllExtractedShellDockerfiles():
 
+    for filepath in glob.glob('bashCommands/*.sh'):
+        #print filepath
+        head, filename = os.path.split(filepath)
+        filename=filename.replace(".sh", "")
+        #print filename
+        createFiles(filename)
+        
 #Function to create actual docker files and bashFiles
 def createFiles(name):
     f=open("bashCommands/"+name+".sh","r")
@@ -80,50 +109,66 @@ def createFiles(name):
         if(i.find("docker") == -1):
            s.write(i+"\n")
     s.close()
+    f.close()
+    #executeDocker(name)
     
-def getAllExtractedShellDockerfiles():
-    createDirectory("shellfiles")
-    createDirectory("dfiles")
-    createDirectory("dlogs")
-    for filepath in glob.glob('bashCommands/*.sh'):
+def makeDockerFile(dockerFile,rep):
+    n = open("dfiles/"+dockerFile, "w")
+    n.write("FROM "+ rep+"\n")
+    n.write("COPY shellfiles/"+dockerFile+".sh /"+"\n")
+    n.write("CMD [\"bash\", \"/"+ dockerFile+".sh\"]"+"\n")
+    n.close()
+
+def executeAllDockerfiles():
+
+    for filepath in glob.glob('dfiles/*'):
         #print filepath
         head, filename = os.path.split(filepath)
-        filename=filename.replace(".sh", "")
         #print filename
-        createFiles(filename)
-
-def makeDockerFile(name,rep):
-    n = open("dfiles/"+name, "w")
-    n.write("FROM "+ rep+"\n")
-    n.write("COPY shellfiles/"+name+".sh /"+"\n")
-    n.write("CMD [\"bash\", \"/"+ name+".sh\"]"+"\n")
-    n.close()
-    executeDocker(name)
+        executeDocker(filename)
 
 def executeDocker(nameDfile):
-    print nameDfile
+    
     client = docker.from_env()
     dPath = "dfiles/"+nameDfile
-    print dPath
     dTag= "dockertagfor"+nameDfile.lower()
-    print dTag
-    print "Pulling the container it will take time"
-    image = client.images.build(dockerfile=dPath,tag=dTag,path='.')
-    print "Executing the container"
-    container = client.containers.run(dTag,name='testitpython')
-    print "Fetching the Execution logs of the container"
-    container = client.containers.get('testitpython')
-    print dPath
+    dlogs = "dockerlogs"+nameDfile.lower()
+    
+    print "\n\nPulling the container for " + dPath +" with tag " + dTag+ " it will take time"
+    try:
+        image = client.images.build(dockerfile=dPath,tag=dTag,path='.')
+    except docker.errors.APIError as Err:
+        print "Error Executing Docker "
+    
+    
+    print "Executing the container " + dPath + "and dropping logs at " + dlogs
+    try:
+        container = client.containers.run(dTag,name=dlogs)
+    except docker.errors.APIError as Err:
+        print "Error running Docker "
+                
+    print "Fetching the Execution logs of the container " + dPath
+    container = client.containers.get(dlogs)
+    
+    print "Sleeping for 5 seconds to fetch logs"
     print container.logs()
+    
     s = open("dlogs/"+nameDfile,"w")
     s.write(container.logs())
-    container.remove
+    
+    print "Removing the container " + dPath
+    client.containers.prune()
+    s.close()
     
 def main():
+    setup()
     getAllFiles()
     #executeShell()
     #getAllExtractedShellDockerfiles()
-    executeDocker("C")
+    executeAllDockerfiles()
+    #executeDocker("C")
+
+    #cleanup()
      
 if __name__== "__main__":
   main()
