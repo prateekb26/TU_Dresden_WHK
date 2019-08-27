@@ -1,0 +1,50 @@
+
+version: "3.1.scone"
+services:
+    primary-service:
+        image: myapp-image:latest
+        command: /myapp arg1 arg2 arg3 $my_password
+        mrenclave: 5764436f08dd4cdb526f082be1a07a3422f79ef2b01a5e24f78f9034a838c335
+        environment:
+            - SECURE_ENV=value
+            - MY_PIN=$my_pin
+            - MY_PASSWORD=$my_password
+        working_dir: /
+    proxy:
+        image: haproxy
+        command: haproxy --read_config_from_environ
+        not_scone: "true"
+        environment:
+            - "HAPROXY_CONFIG=a=b,c=d,3=4"
+secrets:
+    my_pin:
+        kind: numeric
+        length: "4"
+    my_password:
+        kind: ascii
+        length: "8"
+
+The extended stack file is split by SCONE into a standard stack file and a configuration information that is stored in the SCONE *Configruation and Attestation Service* (**CAS**):
+
+ ![*scone stack deploy*](img/SCONE-compose.png)
+
+In the current version of scone, we assume that the stack file is stored on a trusted host. 
+
+The *split* functionality is part of the **scone CLI**, i.e., you can split a stack file via
+
+
+The stack ID is a randomly chose unique ID.
+
+This creates a stack file that can be used to start a set of services in your Swarm. Read [nginx example](SCONE_EE2EE.md) for some more details how to do this.
+
+
+To be able to use a CAS, you are required to login to a CAS. We assume that your CAS is available at IP address **$IP**. If you have set up the CAS in the way specified in [CAS Setup](SCONE_CAS.md), set environment variable IP to the external IP address of the swarm manager node.
+
+You can login into CAS via:
+
+
+Replace **YOURID** by your desired user id and **CASALIAS** by a name that you want to use to refer to this cas (see [example](SCONE_EE2EE.md)).
+
+See [nginx example](SCONE_EE2EE.md) for some more details and read [CAS Setup](SCONE_CAS.md) to learn how to run a CAS service for development.
+
+&copy; [scontain.com](http://www.scontain.com), March 2018. [Questions or Suggestions?](mailto:info@scontain.com)

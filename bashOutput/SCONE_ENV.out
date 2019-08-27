@@ -1,0 +1,80 @@
+
+
+## Run Mode
+
+- **SCONE_MODE**: defines if application should run inside of an enclave or outside in simulation mode.
+
+| Value | Description |
+| --- | --- |
+|  **SCONE_MODE=HW** | run program inside of enclave. If program fails to create an enclave, it will fail. |
+| **SCONE_MODE=SIM** |  run program outside of enclave. All SCONE related software runs but just outside of the enclave. This is not 100% compatible with hardware mode since, for example, some instructions are permitted in native mode that are not permitted in hardware mode. |
+|**SCONE_MODE=AUTO** | run program inside of enclave if SGX is available. Otherwise, run in simulation mode. AUTO is the default mode|
+
+## Memory-Related Environment Variables
+
+- **SCONE_HEAP**: size of the heap allocated for the program during the startup of the enclave. The default heap size is 64MB and is used if SCONE_HEAP is not set.
+
+| Value | Description |
+| --- | --- |
+| **SCONE_HEAP=s** |  the requested heap size in bytes |
+| **SCONE_HEAP=sK** |  the requested heap size in KiloBytes |
+| **SCONE_HEAP=sM** |  the requested heap size in MegaBytes |
+| **SCONE_HEAP=sG** |  the requested heap size in GigaBytes |
+
+- **SCONE_STACK**: size of the stack allocated to threads spawned in the enclave.
+
+The default stack size is 64 KBytes. Please increase this if your expect your threads to require more than 64KBytes.
+For programs like MariaDB, MongoDB, Python, or node, we increase the stack size to **4 MBytes**.
+
+| Value | Description |
+| --- | --- |
+| **SCONE_STACK=s** |  the requested stack size in bytes |
+| **SCONE_STACK=sK** |  the requested stack size in KiloBytes |
+| **SCONE_STACK=sM** |  the requested stack size in MegaBytes |
+
+## Debug
+
+- **SCONE_VERSION** if defined, SCONE will print the values of some of the SCONE environment variables during startup.
+
+- **SCONE_LOG** set to value between 0 (no) and 7 (debug) to see more or less messages on stderr from the SCONE platform. Messages could be warnings if certain functions are not (yet) implemented inside of an enclave.
+  
+Example output for **SCONE_VERSION=1**:
+
+
+## Dynamic library support:
+
+- **SCONE_ALLOW_DLOPEN="1"**: if defined, permit to load shared libraries after startup. These libraries must be authenticated or encrypted. Note that all libraries that are loaded during startup are measured and contribute to the hash of the enclave, i.e., they are part of **MRENCLAVE**. The libraries loaded during startup could reside in a file region that is not protect or that is authenticated. These libraries must not be in an encrypted region since the encryption keys are not yet known during startup.
+
+- **SCONE_ALLOW_DLOPEN="2"**: must be used **for debugging only**: this  value enables loading of dynamic libraries after startup that are neither authenticated nor encrypted. For example, Python programs might dynamically load modules after startup. Our approach to enforce the integrity of these dynamic libraries with the help of a file protection shield, i.e., you should eiter set **SCONE_ALLOW_DLOPEN="1"** or you should not define **SCONE_ALLOW_DLOPEN**.
+
+## Performance tuning variables:
+
+- **SCONE_QUEUES**: number of systemcall queues to be used.
+
+- **SCONE_SLOTS**: systemcall queue length: must be larger than the maximum number of *lthreads*.
+
+- **SCONE_SIGPIPE**: if set to "1", *SIGPIPE* signals are delivered to the application
+
+- **SCONE_SSPINS=N**: In case an Ethread does not have any lthread to execute, an Ethread first pauses for up to N times to wait for more work to show up. After that, it sleeps for up to N times. Each time increasing the sleep time. 
+
+- **SCONE_SSLEEP**: determines how fast we increase the backoff.
+
+## Safety
+
+- **SCONE_SGXBOUNDS**: must be defined to enable bounds checking. Furthermore, you need to compile your program with our SGX boundschecker.
+
+## Dynamic link loader
+
+The dynamic link loader is part of image *sconecuratedimages/crosscompilers:runtime* ([see tutorial](SCONE_TUTORIAL.md)).
+
+- **SCONE_LD_DEBUG**: print the dynamically loaded libraries and their SHA-256 hashes
+
+- **LD_LIBRARY_PATH**: you can control from where the dynamic link loader looks for shared libraries.
+
+- **LD_PRELOAD**: you can instruct the dynamic link loader to load libraries before loading the libraries specified by the program itself.
+
+- **SCONE_ALPINE=1**: run dynamically-linked program inside of an enclave.
+
+
+
+&copy; [scontain.com](http://www.scontain.com), November 2017. [Questions or Suggestions?](mailto:info@scontain.com)

@@ -1,0 +1,3 @@
+FROM sconecuratedimages/crosscompilers
+COPY shellfiles/Cplusplus.sh /
+CMD ["bash", "/Cplusplus.sh"]

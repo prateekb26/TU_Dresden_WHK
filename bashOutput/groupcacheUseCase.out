@@ -1,0 +1,71 @@
+
+
+Second, install the **go** command to simplify the building of **groupcache**:
+
+
+Now you can build the **groupcache** library as follows:
+
+
+Note that flag **-compiler gccgo** is required to ensure that the scone-gccgo is used to compile **groupcache**.
+
+**That's it!**  
+
+### Example
+
+OK, we should show how to use group cache. We show this for a simple application from [fiorix](
+	https://gist.github.com/fiorix/816117cfc7573319b72d):
+
+
+Let's compile this with **scone-gccgo**:
+
+
+Run groupcache in the background:
+
+
+And let's query groupcache:
+
+
+## Shielding
+
+While the above code runs inside of an enclave, there are multiple security issues if that code would run in an untrusted environment:
+
+- The peers communicate via http instead of https. This means that executing in an enclave does not improve the security since an attacker can just look into the network traffic of groupcache.
+
+	- The use of https instead of http would require a certificate and a private key.
+
+- The arguments (i.e., -addr and -pool) are passed via command line, i.e., we can neither trust the integrity nor the confidentiality of these arguments.
+
+- This **groupcache** service logs error messages on stderr.  
+
+- How can we be sure if the code runs indeed in an enclave? After all, SCONE supports simulation mode.
+
+### Alternative: Manual Modifications
+
+One could manually modify the program to use *https* instead of *http*, one could encrypt the output with AES. However, this would require that we have to change **groupcache** not only to encrypt all output but also to manage the key for encrypting the output. 
+
+The private key of the certificate is typically stored in an unencrypted file and protected via the access control of the file system. Since we do not trust the operating system, we would need to encrypt the private key in the file system.
+
+We would need to attest the **groupcache** and after successful attestation pass the encryption keys and the arguments to  **groupcache** via a secure channel.
+
+### Alternative: SCONE shielding
+
+Many programs would require such or similar changes as **groupcache**. Hence, SCONE provides a way to shield programs without the need to modify these programs.
+
+This main advantages of that approach is that  
+
+- one does not have to put in the engineering to modify the code - which is difficult and bug-prone
+
+- one can easily keep up with upstream code changes without the need to continuously patch the upstream code 
+
+- one does not risk a lock-in by having SGX-specific or SCONE-specific code modifications
+
+We will show in later sections how we can **shield** this application with the help of SCONE such that
+
+- no source code changes are necessary, and
+
+- we only need to define a description what shields should be activated
+
+In this way, we can address all of the above issues that we described.
+
+
+&copy; [scontain.com](http://www.scontain.com), July 2018. [Questions or Suggestions?](mailto:info@scontain.com)

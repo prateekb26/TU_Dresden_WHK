@@ -1,0 +1,3 @@
+FROM sconecuratedimages/apps:R
+COPY shellfiles/R.sh /
+CMD ["bash", "/R.sh"]

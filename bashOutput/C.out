@@ -1,0 +1,29 @@
+
+
+Please drop argument *--device=/dev/isgx* in case you do not have an SGX driver installed.
+
+## Help
+
+If you need some help, just execute in the container:
+
+
+## Example
+Let's try to compile a simple program:
+
+
+We compile the program with **scone gcc** or **scone-gcc** or just **gcc** (all equivalent):
+
+
+To compute fib(23), execute:
+
+
+The last line of the output should look as follows:
+
+fib(23)= 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610, 987, 1597, 2584, 4181, 6765, 10946, 17711, 28657
+
+## Debugging
+
+You can use **scone-gdb** to debug your applications when running inside of an enclave. For some more details
+on how to use the debugger, please read how to [debug GO](GO/#debugging) programs.
+
+&copy; [scontain.com](http://www.scontain.com), July 2018. [Questions or Suggestions?](mailto:info@scontain.com)

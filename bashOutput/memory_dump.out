@@ -1,0 +1,57 @@
+
+
+Let's create some program that stores a secret (**MYBIGS**) in a local variable *secret*:
+
+
+Compile this program with the SCONE crosscompiler (i.e., gcc):
+
+
+## Simulation Mode
+
+You can run this program in **SIMULATION MODE**, i.e., this program does not protect your secrets:
+
+
+Log into a different terminal on your **host**. Let us figure out the process ID of the mysecret program:
+
+
+Now, we can dump the memory of this process via the */proc* filesystem. You can determine
+the memory is stored in */proc/$SPID/mem*. We can use the following
+Python program to write all pages to *stdout*: 
+
+
+Run this program and grep for the prefix of our secret:
+
+
+This will take some time but eventually it will print the full secret **MYBIGS**.
+
+## Hardware Mode
+
+Let us now run the program in hardware mode. First, **ensure that you kill the original program**
+by typing *control-C*.
+
+
+<center>
+![Finding secret in prerelease mode](img/prerelease_finding_secrets.png)
+</center>
+
+
+Let's start mysecret in an enclave, i.e., in hardware mode inside the container:
+
+
+Update environment variable *SPID* in a second terminal on your host:
+
+
+and then try to find the secret:
+
+
+This will run for much less time and in particular, it will not print any secrets.
+
+Note, however, that secrets stored in the binaries can be found because the binary is
+not encrypted: a copy of the original binary - which is used to start the enclave - 
+stays in main memory outside the enclave. 
+
+Let's look for the string **THIS_IS_NOT_SECRET** in our example application. 
+We can find this secret as follows:
+
+
+&copy; [scontain.com](http://www.scontain.com), July 2018. [Questions or Suggestions?](mailto:info@scontain.com)

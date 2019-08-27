@@ -1,0 +1,64 @@
+
+aptsigner:
+  image: aptsigner
+  target_num_containers: 1
+
+  command: aptsign ...
+  volumes:
+   - /infinit/myself/etc-mysql:/packages
+   - /infinit/myself/apt-keyring:/keyring
+
+The stack file gives us the image names and the volumes that might be mapped into the containers.
+
+We can authenticate the root FSPF with a public key and optionally, encrypt the fspf with a symmetric key. The symmetric key would permit customers to decrypt the FSPF.
+
+ scone image protect | # |Description
+----------------------|-----------|-----------------------------------------------
+--encrypt  |  0-1 | encrypt all files currently stored in this image
+--signer KEY | 0-1 | certificate use to sign FSPF (optionally)
+--mrsigner MRSIGNER | 0-1 | key to sign enclave (optionally)
+--service NAME | 0-1 | default - encrypt all services in the stack file
+--intag TAG | 0-1 | default - scone
+--stack FILE | 1 | stackfile used to define volumes
+--binary CMD | 0-n | ensure that this binary runs inside an enclave 
+
+We store for each image the signer key, the tag and the encryption key in CAS. We can give access to these keys via a token. A token has a limited lifetime, typically, one year.
+
+## Encrypt Volume
+
+A user can run a container by specifying a stack file. This stack file contains all information for SCONE to figure out the signatures to run the services / images. However, we need to run the stack in the context of the same session in which the volume was encrypted (or, the session was given access to these keys). 
+
+Encrypt volume and store tag in CAS:
+
+
+This call will fail if the volume is already encrypted. To simplify encryption, you will be able to create an already encrypted volume (via flag **--encrypt**).
+
+The call will also fail, if no session is currently active.
+
+The key is stored in the current session as **volume/tenant/vol/key** and the tag as **volume/tenant/vol/tag**.
+
+## Updating TAG
+
+
+In case the volume has been updated and you want to map it into a  container, you need first to update the TAG in CAS. To update the tag, perform the following 
+
+
+ scone volume encrypt | Description
+----------------------|----------------------------------------------------------
+--update-tag  |  update the TAG in CAS
+--reencrypt | change the encryption key
+--check | do not perform integrity check if volume is already encrypted
+
+A container can update the TAG and store the update TAG in a file and encrypt the TAG with a shared key **volume/tenant/vol/tagkey**. 
+
+
+## Example: nginx
+
+
+sconedocs:
+  image: 127.0.0.1:5000/sconetainer:fss
+
+  command: /bin/nginx -p /nginx -c nginx.conf
+  volumes:
+   - /infinit/scone/sconedocs:/nginx
+   - /infinit/scone/sconedocs-etc:/nginx-etc

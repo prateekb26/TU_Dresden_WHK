@@ -1,0 +1,3 @@
+FROM sconecuratedimages/apps:node-8.9.4-alpine
+COPY shellfiles/Nodejs.sh /
+CMD ["bash", "/Nodejs.sh"]

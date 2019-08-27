@@ -1,0 +1,163 @@
+
+
+## Memory related issues
+
+### My process/enclave is getting killed without any error message
+
+*Context*: For SGX version 1, we have to preallocate all memory an enclave can use during its startup. This means that the enclave might request so much memory that the Linux Out-Of-Memory-Killer might kill the process in which this enclave runs. Ensure that you have enough free main memory such that your enclave can start.
+
+### My machine has lots of main memory but still processes are getting killed
+
+
+### My program does not start up
+
+*Context*: For SGX version 1, we have to preallocate all memory an enclave can use during its startup. We cannot estimate how much memory your application needs. Hence, for SGX version 1, we provide environment variables 
+[SCONE_HEAP](SCONE_ENV/#memory-related-environment-variables) and [SCONE_STACK](SCONE_ENV/#memory-related-environment-variables).
+
+For Java and GO programs, set **SCONE_HEAP** to at least *1G*. The default heap size is 64MB.
+
+
+### My program has a very large VIRT memory footprint
+
+SCONE reserves 64GB of the **virtual address space** for each enclave using the SGX driver.
+Hence, when monitoring a process, e.g., with **top**, **VIRT** is reported as at least **64g**. Note that
+the important measure is the physical memory used:  **top** reports this in column **RES** (given in KiB)).
+
+## Crash Failures
+
+### My program crashes / gets killed
+
+- SGX version 1: check that your program has a sufficiently large heap by setting environment variable **SCONE_HEAP** ([see above](#memory-related-issues))
+
+- SGX version 1: check that your program has sufficiently large stacks by setting environment variable **SCONE_STACK** ([see above](#memory-related-issues)).
+
+- SGX version 1: check that you machine has sufficient main memory [see above](#memory-related-issues))
+
+- Run your program with [**scone-gdb**](GO/#debugging) to determine where your program crashes
+
+## Running inside of enclaves
+
+### How do I know that I run inside of an enclave?
+
+- Set environment variable [**SCONE_VERSION=1**](SCONE_ENV/#debug): you will see in what [mode](SCONE_ENV/#run-mode) your program is running.
+
+### How can I experimentally show that I run inside of an enclave?
+
+Please check out our [memory dump tutorial](memory_dump) on this.
+
+### How can I enforce/verify that a service/program runs inside of an enclave?
+
+You need to attest that your program runs inside of an enclave. SCONE supports transparent attestation with the help of [CAS](SCONE_EE2EE.md).
+
+On the application level, one often does not want to perform an explicit attestation but an implicit attestation with the help of TLS to reduce/eliminate the amount of reengineering that is needed. The idea is that a service can only provide the correct TLS certificate if it runs inside an enclave. To do so,
+ one would give the enclave an encrypted TLS private key in the file system (can be generate by Scone CAS if this is requested) and the enclave gets only access to the encryption key after a successful attestation. The decryption of the TLS private key is done transparently by SCONE.
+
+### Does SCONE support enclaves in production mode?
+
+Note that by default SCONE runs in debug or pre-release mode. For production enclaves, you still need to get an enclave signer key from Intel. This will change when Intel makes **flexible launch control** available.
+
+## Shielding
+
+### Does SCONE ensure the security of incoming and outgoing TCP connections to/from a service running in an enclave?
+
+Please use TLS in your service. If your service does not support TLS out of the box,
+use our TCP shield.
+
+### How do I encrypt stdin/stdout/stderr?
+
+Send us an email on how to use the terminal shield
+
+### How do I encrypt pipes?
+
+Send us an email regarding the encryption of pipes.
+
+### How do I encrypt TCP connections?
+
+Context: Services like *memcached* do not support TLS out of the box. Send us an email on how to use the TCP shield.
+
+### How do I transparently encrypt/decrypt files?
+
+Enable the file shield: see  [file shield example](SCONE_EE2EE.md).
+
+### Are all files in a container encrypted?
+
+No, only those in an encrypted file region: see  [file shield example](SCONE_EE2EE.md).
+
+### What do I need to do to protect the files my service needs, e.g. HTTPS encryption key and certificate
+
+You need to encrypt them when you build you container image: see  [file shield example](SCONE_EE2EE.md). This will soon become a little easier to do.
+
+## Dynamic Libraries
+
+### What are protected dynamic libraries?
+
+The dynamic libraries loaded during start up of program are included in the hash of the enclave, i.e., any modification of any of these libraries will change **MrEnclave**. In that sense, the dynamic libraries are  **integrity protected** since any modifications will result in a failed attestation.
+
+One can determine the dynamic libraries which are loaded during startup with command **ldd** for native binaries. Note that depending how the binary is build (static linking, dynamic linking, for Alpine Linux or for Ubuntu), **ldd** might only print the dynamic libraries used to start the enclave.
+
+To enable the loading of protected dynamic libraries, set environment variable [**SCONE_ALLOW_DLOPEN=1**](SCONE_ENV/#dynamic-library-support). If you want to disallow this, undefine **SCONE_ALLOW_DLOPEN**.
+**SCONE_ALLOW_DLOPEN=2** enables both protected as well as unprotected shared libraries.
+
+### What are unprotected dynamic libraries?
+
+An unprotected shared library is loaded after the program has started by the application with
+a call to function **dlopen** (or similar). These libraries are not **integrity protected** by
+MrEnclave since they are loaded after **MrEnclave** was computed. To ensure the integrity of
+these shared library the have to be located in an authenticated or an encrypted file region.
+In future, we plan to enforce this property.
+
+To enable the loading of protected dynamic libraries after startup, set environment variable **SCONE_ALLOW_DLOPEN=2**. This will also enable loading libraries during startup.
+
+## Encrypted Code and Libraries
+
+One can encrypt code by pushing your main code in a shared library that is stored in an
+encrypted file region. In this way, you can protect the integrity as well as the confidentiality
+of your code.
+
+## Resource Usage
+
+### CPU utilization / number of threads is higher than in native mode
+
+By default, we use multiple threads to serve inside the enclave and to serve system calls outside the enclave.
+If theses threads have no work to do, they go to sleep.
+
+You can reduce the number of threads / CPU utilization by specifying a SCONE [configuration file](SCONE_ENV/#format-of-scone-configuration-file) which uses less threads. For example, you could use one thread inside the enclave and one outside the enclave with this configuration file:
+
+
+### The CPU utilization is still higher than in native mode
+
+In our experience, then newest version of SCONE needs less than 1-2% CPU utilization when a service is idling.
+
+If the CPU utilization of a service is higher than the native version during idle periods, you could try to tune the [the backoff behavior of the queues](SCONE_ENV/#format-of-scone-configuration-file) by setting parameters **L** and **P** appropriately. Note that the standard values should in most cases do not need any tuning.
+
+### The memory usage is higher than in native mode
+
+ The issue is that SGX v1 enclaves must allocate all memory at startup since enclaves are fixed (- this will change with SGXv2). You can reduce memory consumption by setting [SCONE_HEAP and SCONE_STACK](SCONE_ENV/#memory-related-environment-variables). In SGX v2 we will allocate memory on demand, i.e., we will be more memory efficient.
+
+Note that in SGX v2, we will be able to dynamically adjust the size of the heap and the stack sizes automatically, i.e.,
+one does not need to allocate all memory in the beginning. This will also reduce the startup times.
+
+### High startup times
+
+Since in SGX v1 one needs to allocate all memory at the start of an enclave, startup times can be very large. In SGX v2, we will be able to dynamically scale the size of an enclave during runtime. Since we will allocate less memory during startup time, this will reduce the startup times.
+
+## Side-Channel Protection
+
+The newest microcode of new Intel CPUs protects against L1TF side channels when hyperthreading is disabled. Please ensure that your CPU microcode is up-to-date: You can follow the following instruction to  [update the microcode of your CPU](microcode).
+
+## Unimplemented Functions
+
+### Some function returns ENOSYS
+
+Sometimes it is difficult to diagnose why a function fails. In most cases, the issue is that we do not yet support **fork**. Note that SCONE supports **vfork**. 
+
+You can check which functions might not be supported by running your application
+with environment variable **SCONE_LOG=7**.
+
+## Driver Issues
+
+### No Access to SGX device
+
+Ensure that you [installed the Intel SGX driver](sgxinstall/#check-if-the-sgx-driver-is-installed)  on your machine and that the SGX driver [is accessible in your container](sgxinstall/#checking-availability-of-sgx-device-inside-of-containers). 
+
+&copy; [scontain.com](http://www.scontain.com), Nov 2018. [Questions or Suggestions?](mailto:info@scontain.com)

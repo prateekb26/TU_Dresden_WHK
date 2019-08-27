@@ -1,0 +1,26 @@
+
+
+This script will check if the required components are already installed and installs only the components that have not yet been installed.
+
+## Customized Installation
+
+You can customize the SCONE installation based on your needs.
+Depending on how you want to use SCONE, you could instead install software components
+on a per need basis:
+
+- [**Simulation mode:**](firstcontainer.md) if you want to run SCONE inside a container in simulation mode, you just need to [install the docker engine](dockerinstall.md) on your host.
+
+- [**Hardware mode:**](hardwaremode.md) If you want to run your applications in hardware mode inside of containers, you need to [install the docker engine](dockerinstall.md) and [install the Intel SGX driver](sgxinstall.md) on your host.
+
+- [**Running on a host:**](hostexample.md) Running you applications on a host, you need to [install the Intel SGX driver](sgxinstall.md) on the host.
+
+- [**Running an iExec platform:**](iexec_install.md) The iExec containers are so far started without explicitly mapping the isgx device into these containers. Hence, you need to install the patched docker engine and the patched sgx driver.
+
+- **Running on a VM:** Running you applications on a virtual machine, you need to [install the Intel SGX driver](sgxinstall.md) on the VM and 
+you have to ensure that your hypervisor supports SGX: You might want to install a [patched version of KVM](https://github.com/intel/kvm-sgx).
+
+- [**Running in Docker Swarm:**](SCONE_Swarm_Example.md) Since Docker Swarm does not permit to map devices to containers in the swarm, you need to [install a patched docker engine](SCONE_HOST.md).
+
+!!! note "Ensure that your CPU runs the newest microcode by [**updating the CPU microcode**](microcode.md)."  
+
+&copy; [scontain.com](http://www.scontain.com), Dec 2018. [Questions or Suggestions?](mailto:info@scontain.com)

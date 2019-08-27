@@ -1,0 +1,3 @@
+FROM sconecuratedimages/crosscompilers
+COPY shellfiles/Fortran.sh /
+CMD ["bash", "/Fortran.sh"]

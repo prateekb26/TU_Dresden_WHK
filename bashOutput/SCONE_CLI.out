@@ -1,0 +1,37 @@
+
+
+Typically, you would run the **scone CLI** in a container on your developer machine. The containers you would run on a different machine. Hence, you will need some ssh credentials inside this container. 
+
+!!! note "ssh setup"
+    The **scone CLI** uses *ssh* to log into remote hosts. We assume that *ssh* is setup in such a way that you do not need passwords to log into these hosts.  Read section [ssh setup](ssh.md) to learn how to use import ssh credentials inside of a container.
+
+
+## Help
+
+*scone* has a built in help. To get a list of all **objects**, just type:
+
+
+To get a list of all **commands** for a given **object** (like host), execute:
+
+
+To get a list of all options for a given **object** and **command** (e.g., host install) and some examples, just execute:
+
+
+## bash auto-completion
+
+If you are using *bash* as your shell, *scone* supports auto-completion. This means that instead you can use the **TAB** key to see the options. For example,
+
+
+will show all available objects. If you have already specified an object, auto-completion helps you to list all commands:
+
+
+If you also specified an command, it will provide you with a list of options (that you have not specified yet):
+
+
+Of course, it also supports auto-completion:
+
+
+will result in 
+
+
+&copy; [scontain.com](http://www.scontain.com), November 2017. [Questions or Suggestions?](mailto:info@scontain.com)

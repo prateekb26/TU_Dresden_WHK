@@ -1,0 +1,32 @@
+
+
+It is expected that the name of the image to be pulled has the 
+following format:
+
+
+After pulling the image, it is locally available in the swarm.
+The name of the image id now:
+
+
+The identity of MANAGER is given via option --manager or via
+environment variable SCONE_MANAGER.
+
+Options              | Description
+---------------------|-------------------------------------------------------------
+  --manager MANAGER  | manager of swarm (required)
+  --verbose          | print verbose messages
+  --debug            | print debug messages
+  --help             | print usage of this command
+
+### Example
+
+To ensure that a registry is running on the swarm managed by node **faye**, execute:
+
+
+To pull image **sconecuratedimages/sconetainer:shielded** from docker hub and store it in the local registry, execute
+
+
+You can then start this image as a service on the swarm managed by **faye** as follows:
+
+
+&copy; [scontain.com](http://www.scontain.com), December 2017. [Questions or Suggestions?](mailto:info@scontain.com)

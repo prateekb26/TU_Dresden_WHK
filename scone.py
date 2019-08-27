@@ -12,12 +12,14 @@ def setup():
     createDirectory("shellfiles")
     createDirectory("dfiles")
     createDirectory("dlogs")
+    createDirectory("bashOutput")
     
 def cleanup():
     removeDirectory("bashCommands")
     removeDirectory("shellfiles")
     removeDirectory("dfiles")
     removeDirectory("dlogs")
+    removeDirectory("bashOutput")
 #Function to create Directory if not existing
 def createDirectory(dirName): 
     try:
@@ -42,16 +44,25 @@ def getAllFiles():
         #print filepath
         head, filename = os.path.split(filepath)
         filename=filename.replace(".md", "")
+        if (filename == "C++") :
+            
+            filename=filename.replace("++","plusplus")
+            print filename
         #print filename
         #Split lines
         prepareContent=prepareFile(filepath)
         #Give it for extraction
         code=extractCode(prepareContent)
+        output=extractOutput(prepareContent)
         if (code):
             #WriteContent to a file
             f = open("bashCommands/"+filename+".sh", "w")
             f.write(code)
             f.close()
+            #WriteOutput to a file
+            s = open("bashOutput/"+filename+".out", "w")
+            s.write(output)
+            s.close()
         else:
             print filename + ".md doesn't not contain any shell code hence no shell file will be generated"
 
@@ -76,19 +87,26 @@ def extractCode(rawContent):
         #find the first ''' to start saving the code 
         if (i.find("```bash") != -1):
             count = count + 1
+            code = code + "\n" + "echo next"
+    return code
+    
+def extractOutput(rawContent):
+    code = ""
+    count=0
+    for i in rawContent:
+        if (i.find("```bash") == -1 and i.find("```")!=-1):
+            markbeginning = 1
+        if (markbeginning == 1):
+            print tcode
+            tcode = tcode + "\n" + i
+        if (markbeginning == 1 and i.find("```bash") != -1):
+            markbeginning=0
+            tcode=""
+        if (i.find("```") != -1 and markbeginning==1):
+            count=2            
     return code
 
-#To Remove
-def executeShell():
-    f=open('bashCommands/test.sh', "r")
-    for i in f.read().splitlines():
-        child = pexpect.spawn("docker pull sconecuratedimages/crosscompilers")
-        child = pexpect.spawn("docker run -it sconecuratedimages/crosscompilers")
-        child.sendline(i)
-        child.expect("ubuntu@ip-172-31-39-63:~")
-        # We can print child.before, which will contain everything before the last child.expect.
-        print(child.before)
-    
+
 def getAllExtractedShellDockerfiles():
 
     for filepath in glob.glob('bashCommands/*.sh'):
@@ -125,7 +143,8 @@ def executeAllDockerfiles():
         #print filepath
         head, filename = os.path.split(filepath)
         #print filename
-        executeDocker(filename)
+        if(filename == "C" or filename == "Cplusplus") :
+            executeDocker(filename)
 
 def executeDocker(nameDfile):
     
@@ -163,8 +182,7 @@ def executeDocker(nameDfile):
 def main():
     setup()
     getAllFiles()
-    #executeShell()
-    #getAllExtractedShellDockerfiles()
+    getAllExtractedShellDockerfiles()
     executeAllDockerfiles()
     #executeDocker("C")
 

@@ -1,0 +1,50 @@
+
+
+Please drop argument *--device=/dev/isgx* in case you do not have an SGX driver installed.
+
+## Help
+
+If you need some help, just execute in the container:
+
+
+Let's try a simple Fortran program.
+
+
+We compile the program with **scone gfortran** (a.k.a. **scone-gfortran**):
+
+
+We can now run this program as follows:
+
+
+The output will look like this:
+
+export SCONE_QUEUES=4
+export SCONE_SLOTS=256
+export SCONE_SIGPIPE=0
+export SCONE_MMAP32BIT=0
+export SCONE_SSPINS=100
+export SCONE_SSLEEP=4000
+export SCONE_KERNEL=0
+export SCONE_HEAP=67108864
+export SCONE_STACK=81920
+export SCONE_CONFIG=/etc/sgx-musl.conf
+export SCONE_MODE=sim
+export SCONE_SGXBOUNDS=no
+export SCONE_VARYS=no
+export SCONE_ALLOW_DLOPEN=no
+export SCONE_MPROTECT=no
+Revision: b1e014e64b4d332a51802580ec3252370ffe44bb (Wed May 30 15:17:05 2018 +0200)
+Branch: master
+Configure options: --enable-shared --enable-debug --prefix=/mnt/ssd/franz/subtree-scone2/built/cross-compiler/x86_64-linux-musl
+
+Enclave hash: e9c60984724c6d5ffc8cc8a6ba4377910e63c8534ef24b87d0727e712809ba50
+ A?
+ B?
+ The GCD of          10  and          15  is           5 .
+
+## Debugging
+
+You can use **scone-gdb** to debug your applications when running inside of an enclave. For some more details
+on how to use the debugger, please read how to [debug GO](GO/#debugging) programs.
+
+&copy; [scontain.com](http://www.scontain.com), July 2018. [Questions or Suggestions?](mailto:info@scontain.com)

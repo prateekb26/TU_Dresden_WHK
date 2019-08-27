@@ -1,0 +1,178 @@
+
+
+Let's write some files in the *data-original* directory:
+
+
+Let's check that **volume** is empty and we print the hash values of the two files in **data-original**:
+
+
+Now, we start the SCONE crosscompiler in a container to create the encrypted volume:
+
+
+### File System Protection File
+
+All the metadata required for checking the consistency of the files is stored in a *file system protection file*, or, short *fspf*. SCONE supports multiple *fspf*s. 
+
+Let's start with a simple example with a single *fspf*. The *fspf* file is created via command **scone fspf create** and let us name this file **fspf.pb**. We execute the following commands
+inside the container (as indicated by the $ prompt):
+
+
+We can now split the file system in *regions*, a region is a subtree. You can add regions to a *fspf* with the help of command **scone fspf addr**.
+
+Each region has exactly one of the following properties:
+
+ - **authenticated**: the integrity of files is checked, i.e., any unauthorized modification of this file is detected and results in a reading error inside of the enclave. Specify command line option **--authenticated**.
+ - **encrypted**: the confidentiality and integrity of files is protected, i.e., encrypted always implies that the files are also authenticated. Specify command line option **--encrypted**.
+ - **not-protected**: files are neither authenticated nor encrypted. Specify command line option **--not-protected**.
+
+File system changes of containers are typically ephemeral in the sense that file updates are lost when a container terminates. When specifying option **--ephemeral**, files in this region are not written to disk, the are written to an in memory file system instead. 
+
+Say for now, that by default we do not protect files and we want to read files and write  back  changed files to the file system. To do so, we define that the root tree is  **--kernel** as well as  **--not-protected**:
+
+
+Let us add another region **/data** that should be encrypted and persisted. To encrypt the files,  we specify option **--encrypted**.
+We specify option **--kernel** followed by a path (here, also **/data**) to request that files in this region are written to the kernel file system into directory **/data**.
+
+
+The encryption key for a file is chosen at random and stored in *fspf.pb*. We use the Intel random number generator *RdRand* to generate the key. The default key length of a region is 32 bytes. Alternatives are key length of 16 and 24 bytes. These can be selected via option  **--key-length 16** and **--key-length 24** when creating a region with command **scone fspf addr**.
+
+Now, that we defined the regions, i.e., **/** and **/data**, we can add files to region **/data**.
+Let's just add all files in **/data-original**, encrypt these and write the encrypted files to **/data**.
+Note, the first **/data** argument specifies the protection region that determines the protection policy.
+The second, specifies where the encrypted files will be stored.
+That is, the command iterates over and reads the existing files in **/data-original** and encrypts them.
+The encrypted file content is written into the directory **/data** while the protection metadata of the individual files is added to the **fsfp.pb** file.
+
+
+**Note** that if the **/data** region would have been only authenticated and not encrypted, the tool does not need to write out any (encrypted) files.
+It will only add the file names and the checksums (tags) of the files located in **/data-original** to the **fspf.pb** file.
+Thus, you could drop the last argument in this case.
+
+Coming back to the above example, we can now compare the hash values of the original files and the encrypted files:
+
+
+The fspf itself is not yet encrypted. We encrypt this file via command
+**scone fspf encrypt fspf.pb**
+
+We store the random encryption key as well as the tag of file **fspf.pb** in file  **/data-original/keytag**.
+
+We introduce a very simple program that reads the two files:
+
+
+Let's crosscompile this program:
+
+
+Executing this program results in an output like this:
+
+
+We need to activate the file system shield via environment variables by setting the location of the file system protection file (in **SCONE_FSPF**), the encryption key of the file (in **SCONE_FSPF_KEY**) and the tag of the fspf (in **SCONE_FSPF_TAG**). 
+We can extract the encryption key as well as the tag of **fspf.pb** from file **/data-original/keytag**:
+
+
+We can now execute this program again:
+
+
+Variables **SCONE_FSPF_KEY**, **SCONE_FSPF_TAG** and **SCONE_FSPF** should only be set manually for debugging since they cannot securely be passed in this way to programs running inside enclaves. To securely pass environment variables, please read the section about [end-to-end encryption](SCONE_EE2EE.md).
+
+## Python
+
+Let's try a similar approach for Python. 
+In the above example, we encrypted a Python program. Let's try to execute this encrypted program that accesses an encrypted file:
+
+
+The files */data/world.py* and  */data/hello.txt* are encrypted:
+
+
+Let's activate the file shield:
+
+
+We can now run the encrypted **world.py** program with the  the Python interpreter:
+
+
+## Protecting the Root Region
+
+Note that in the above example, Python will not be permitted to load dynamic libraries  outside of the protected directory **/data**: a dynamic library must reside in either an authenticated or an encrypted region.  To deal with this, we must define one or more authenticated or encrypted file regions that contain the dynamic libraries.  
+
+Let us show how to authenticate all files in region **/**
+
+
+We need to add all files that our application might access. Often, these files in the root region might be defined in some container image. Let's see how we can add these files to our region **/**.
+
+### Adding files from an existing container image
+
+We show how to add a subset of the files of container image **sconecuratedimages/apps:python-2.7-alpine3.6** to our root region.
+To do so, we ensure that we have the newest images:
+
+
+How can we add all files in a container to the *fspf*? One way to do so requires to run Docker inside of a Docker container. To be able to do so, we need to permit our outermost docker container to have access to  */var/run/docker.sock*:
+
+
+Let us ensure that Docker is installed in this container:
+
+
+Now, we want to add all files of some target container. In our example,
+this is an instance of image *sconecuratedimages/apps:python-2.7-alpine3.6*.
+We ensure that we pulled the latest image before we start the container:
+
+
+We can now copy all files from this container into a new directory **rootvol**:
+
+
+
+Now that we have a copy of the files, we should not forget to garbage collect this container:
+
+
+Let's remove some directories that we do not want our program to access, like for example, **/dev**:
+
+
+Now, we create a root *fspf*:
+
+
+We can now create a new container image with this file system protection file
+using this Dockerfile
+
+
+We can run a container as follows:
+
+Let us activate the file shield:
+
+
+Let's run python with authenticated file system:
+
+
+## Checking the File System Shield
+
+Let's us check the file shield by creating a new python program (*helloworld-manual.py*) in
+side of a python container:
+
+
+When we switch on the file shield, the execution of this program inside the enclave will fail: since this file was not part of the original file system, the file system shield will prevent accessing this file.
+
+
+We can, however, add a new file via programs that have access to the key of the *fspf*. We can, for example, write a python program to add a new python program to the file system.
+
+By default, we disable that the root fspf is updated. We can enable updates by setting environment variable **SCONE_FSPF_MUTABLE=1**. We plan to permit updates of the root fspf by default in the near future (i.e., we will remove variable **SCONE_FSPF_MUTABLE=1**).
+
+
+The tag of the file system protection file is now changed. We can determine the new TAG with the help of command **scone fspf show**:
+
+
+Now, we can run the new **helloworld.py**:
+
+
+## Extended Example
+
+To learn how to use multiple file system protection files, 
+please have a look at the following screencast.
+
+
+[![asciicast](https://asciinema.org/a/xPkMNkeUfDiTonn5fgZZSV3Xt.png)](https://asciinema.org/a/xPkMNkeUfDiTonn5fgZZSV3Xt)
+
+Below is the script that is executed in the screencast:
+ 
+
+## Notes
+
+The SCONE File Protection documentation is not yet completed and more information will be provided soon.
+
+&copy; [scontain.com](http://www.scontain.com), 2018. [Questions or Suggestions?](mailto:info@scontain.com)

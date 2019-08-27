@@ -1,0 +1,3 @@
+FROM sconecuratedimages/crosscompilers
+COPY shellfiles/C.sh /
+CMD ["bash", "/C.sh"]

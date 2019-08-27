@@ -1,0 +1,32 @@
+
+
+You can either execute all step manually by copy&pasting all instructions or you can just execute
+and watch the outputs.
+
+Please change the image name to a repository on docker hub to which you can write:
+
+
+We generate container and compile hello world inside of this container with the help of our standard SCONE cross compiler:
+
+
+Note that above will fail if you do not have access to the SGX device */dev/isgx*.
+
+Turn the container into an image:
+
+
+You can run this image by executing:
+
+
+You can push this image to Docker. However, ensure that you first login to docker:
+
+
+before you push the image to docker hub:
+
+
+Note: this will fail in case you do not have the permission to push to this repository. 
+
+## Screencast
+
+[![asciicast](https://asciinema.org/a/xM4VAixy6QqsjstCtpW88KIHg.png)](https://asciinema.org/a/xM4VAixy6QqsjstCtpW88KIHg)
+
+&copy; [scontain.com](http://www.scontain.com), November 2017. [Questions or Suggestions?](mailto:info@scontain.com)

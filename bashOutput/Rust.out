@@ -1,0 +1,32 @@
+
+
+Let's try a simple hello world program.
+
+
+Let's try our rust program:
+
+
+Let's compile the program for running inside of enclaves:
+
+
+Let's run main inside an enclave and print some debug information:
+
+
+## **scone-cargo** and **scone cargo**: 
+
+You can build projects with **scone cargo**:
+
+
+Alternatively, you can use **scone-cargo** if, for example,  you need a command without a space.
+
+**scone cargo** has access to the SCONE-compiled rust standard library and the target file. **--target=x86_64-scone-linux-musl** instructs it to use our target file - essentially triggering a cross-compiler build.
+
+Due to the cross-compilation, crates that depend on compiled C libraries, such as openssl or error-chain, do not work out of the box. Cargo will not use the system installed libraries because it wrongly assumes that they do not fit the target architecture. To solve this issue, one has to either provide the compiled libraries or deactivate the crate.
+
+The following is an example of how an executable with *openssl* can be compiled:
+
+
+In the case of error-chain, one can just deactivate its optional backtrace feature that actually requires a precompiled library.
+
+
+&copy; [scontain.com](http://www.scontain.com), December 2017. [Questions or Suggestions?](mailto:info@scontain.com)

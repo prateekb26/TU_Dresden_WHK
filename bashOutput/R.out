@@ -1,0 +1,112 @@
+
+
+## Running R
+
+To start R, just execute:
+
+
+This will output something like this:
+
+export SCONE_QUEUES=4
+export SCONE_SLOTS=256
+export SCONE_SIGPIPE=0
+export SCONE_MMAP32BIT=0
+export SCONE_SSPINS=100
+export SCONE_SSLEEP=4000
+export SCONE_KERNEL=0
+export SCONE_HEAP=1073741824
+export SCONE_STACK=4194304
+export SCONE_CONFIG=/etc/sgx-musl.conf
+export SCONE_ESPINS=10000
+export SCONE_MODE=hw
+export SCONE_SGXBOUNDS=no
+export SCONE_VARYS=no
+export SCONE_ALLOW_DLOPEN=yes (unprotected)
+export SCONE_MPROTECT=no
+Revision: d0afc0f23819476cbc7d944a20e91d79fcb6f9ab (Thu Aug 16 16:45:05 2018 +0200)
+Branch: new-docker-images-cf (dirty)
+Configure options: --enable-shared --enable-debug --prefix=/home/christof/GIT/subtree-scone/built/cross-compiler/x86_64-linux-musl
+
+Enclave hash: 71e730d77fcae6fd37b80cd8669f2d75b8e58dbba80afa48929ae817bf263bb0
+Warning message:
+failed to set alternate signal stack
+
+R version 3.5.0 (2018-04-23) -- "Joy in Playing"
+Copyright (C) 2018 The R Foundation for Statistical Computing
+Platform: x86_64-pc-linux-gnu (64-bit)
+
+## Example
+
+Execute some first **R** program (taken from www.rexamples.com):
+
+a <- 42
+A <- a * 2  # R is case sensitive
+print(a)
+cat(A, "\n") # "84" is concatenated with "\n"
+if(A>a) # true, 84 > 42
+{
+  cat(A, ">", a, "\n")
+} 
+
+This will result in an output:
+
+84 > 42
+
+# Example 2
+
+A somewhat more complex example from www.rexamples.com:
+
+#utility functions
+
+readinteger <- function()
+{ 
+  n <- readline(prompt="Enter an integer: ")
+  if(!grepl("^[0-9]+$",n))
+  {
+    return(readinteger())
+  }
+  return(as.integer(n))
+}
+
+# real program start here
+  
+num <- round(runif(1) * 100, digits = 0)
+guess <- -1
+
+cat("Guess a number between 0 and 100.\n")
+
+while(guess != num)
+{ 
+  guess <- readinteger()
+  if (guess == num)
+  {
+    cat("Congratulations,", num, "is right.\n")
+  }
+  else if (guess < num)
+  {
+    cat("It's bigger!\n")
+  }
+  else if(guess > num)
+  {
+    cat("It's smaller!\n")
+  }
+}
+
+This will result in an otherput as follows:
+
+Enter an integer: 50
+It's bigger!
+Enter an integer: 75
+It's bigger!
+Enter an integer: 87
+It's smaller!
+Enter an integer: 82
+It's smaller!
+Enter an integer: 78
+It's bigger!
+Enter an integer: 80
+It's bigger!
+Enter an integer: 81
+Congratulations, 81 is right.
+
+&copy; [scontain.com](http://www.scontain.com), August 2018. [Questions or Suggestions?](mailto:info@scontain.com)

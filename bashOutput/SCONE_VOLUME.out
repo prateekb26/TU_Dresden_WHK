@@ -1,0 +1,97 @@
+
+
+If you want to keep explicit control over user and network names, execute the following:
+
+
+If you want to see the user and network names for a given swarm, execute:
+
+
+### scone volume create
+
+**scone volume create** creates a new infinit volume for a given user (option **--as USER**) 
+and with a given volume name (via option **--name VOLUME**). If required, it (re-)installs the infinit storage platform. If you are sure that the infinit is already properly installed, pass the **--fast** option to avoid checks and reinstallation of infinit.
+
+This volume will be available on all hosts of a swarm at location:
+   **/mnt/infinit/USER/VOLUME**
+
+Options           | Description
+------------------|-------------------------------------------------------------
+  --manager HOST  | manager of swarm (required)
+  --name volume   | name of volume to create (required)
+  --help          | show this help message
+  --as user       | run as user (default )
+  --network name  | name of network to use/create (default )
+  --silo name     | name of silo to use/create (default )
+  --capacity sz   | size of silo in GB (default )
+  --fast          | create volume without reinstalling all software (default=false)
+  --verbose       | print location of created volume
+
+**Example: **
+
+In case you already installed infinit on your swarm and you just want to create a new volume,
+execute the following:
+
+
+In case you do not know if infinit is already installed when you create a volume and
+your want to keep control over the names used by infinit, execute the following:
+
+
+## scone volume check
+
+Checks if all created volumes are available on all swarm nodes.
+
+**Note: the current implementation of **scone volume check** uses the metadata stored in the container/environment in which **scone volume check** executes. In case you created some volumes in a different container, the checks will complain.**  Will plan to fix this issue in a future version of **scone volume check**.
+
+Options           | Description
+------------------|-------------------------------------------------------------
+  --manager HOST  | manager of swarm (required)
+
+**Example:** 
+
+
+## scone volume delete
+
+**scone volume delete** deletes a volume. This removes the volume from all nodes of a swarm.
+
+Options           | Description
+------------------|-------------------------------------------------------------
+  --manager HOST  | manager of swarm (required)
+  --name volume   | name of volume to be deleted (required)
+
+**Example:**
+
+
+## Example
+
+To install *infinit* on all nodes of a swarm managed by node *faye* and reserve a capacity of 15GB per node, execute the following:
+
+
+To create a volume named **test_scone_volume** for some arbitrary infinit user **test_scone_user**, 
+execute the following:
+
+
+Note that the infinit user **test_scone_user** is automatically created if it does not yet exists.
+
+After completion of this command, you will have access to the newly created volume at location **/mnt/infinit/test_scone_user/test_scone_volume** on all nodes of the swarm.
+
+You can give a service access to this volume with the help of its stack file.
+Say, the service needs to access this mapped at **/mnt/vol**  as follows:
+
+myservice:
+   volumes:
+        - /mnt/infinit/test_scone_user/test_scone_volume:/mnt/vol
+
+Note that **scone volume create** will check that **infinit** is properly installed and will reinstall parts that
+are missing. If you are sure that infinit is properly installed, you can add option **--fast** to omit the checks that **infinit** is properly installed.
+
+To create a volume **test_scone2_volume** on a swarm managed by **faye** when you know that **infinit** is installed, just executed
+
+
+To check that the volumes on the swarm are properly installed, execute command **check**:
+
+
+
+To delete a volume, we provide command **delete**. For example, to delete volume **test_scone2_volume**, execute:
+
+
+&copy; [scontain.com](http://www.scontain.com), December 2017. [Questions or Suggestions?](mailto:info@scontain.com)

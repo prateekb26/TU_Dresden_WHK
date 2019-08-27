@@ -1,0 +1,7 @@
+
+
+In case you set the environment variable **SCONE_MANAGER** to **faye**, you can drop option **--manager**:
+
+
+
+&copy; [scontain.com](http://www.scontain.com), December 2017. [Questions or Suggestions?](mailto:info@scontain.com)

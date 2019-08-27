@@ -1,0 +1,19 @@
+
+
+If **scone swarm ls** issues some warnings or there are no SGX-capable machines listed, you might want to run **scone swarm check** to update the labels of the swarm nodes.
+
+To run LAS on all nodes of a cluster managed by node **faye**, pull the newest LAS image and then execute on all nodes of a SWARM:
+
+
+Check that the service *las* is indeed running, check with command *ps*:
+
+Now, we can start the CAS service as follows. We first pull the newest
+CAS image and run it on one node of the swarm.
+
+
+Let's check that CAS is indeed running:
+
+
+&copy; [scontain.com](http://www.scontain.com), June 2018. [Questions or Suggestions?](mailto:info@scontain.com)
+
+

@@ -1,0 +1,101 @@
+
+
+### scone session key
+
+Creates a key or a certificate and makes it available at a given key name.
+
+
+#### Options
+
+ scone session key     | Description
+-----------------------|-----------------------------------------------------------------------
+--scope SCOPE     | limits visibility of key: final, session, full. **final** = only participants specified with option --access are permitted to receive the key. **session** = one can add more enclaves that can access the key but it is not possible to extend this beyond the current session. **full** no limit to what extend the user can share this key with other sessions.
+-- type TYPE | determines the type of key. TYPE=[DIGIT:N,ALPHA:N,ALPHANUM:N,PRINT:N,CERT:N]
+
+
+### scone session share --key KEYNAME  --gentoken --session SESSIONID
+
+Use cases:
+
+1) We share the public key and the private key of an image with a client
+
+
+2) We share the complete session with another client:
+
+
+
+3) Share all keys related to a stack that was created
+
+
+Prints a token that can be used to access all keys to be able to run this stack 
+
+### scone session join --session SESSION-ID --token TOKEN
+
+Use case:
+
+Replace the current session by another session:
+
+
+We effectively join a already existing session ID with a new client.
+
+### scone session import --token TOKEN
+
+
+Import all keys related to the TOKEN. If **--replace** is given, keys are updated in case they already exist. Otherwise, an error message is issued.
+
+
+### scone session checkpoint 
+
+Copies the current state of a session from the CAS and stores it encrypted on the local file system.
+
+
+### scone session restore --session SESSIONID --CAS URL
+
+Take the checkpoint of session SESSIONID and stores it to CAS referred to via URL.
+
+If the session already exists, this will result in a failure.
+
+### scone session remove --force
+
+Removes a current session from the CAS.
+
+### scone session activate --session SESSIONID
+
+Switches session to another session with ID SESSIONID
+
+## Example: Sconedocs website
+
+Root ...
+
+
+We need to specify the path, the key and the tag of the file system protection file:
+
+image: aptsigner
+fspf_path: /nginx/fspf.pb
+fspf_key: 970f4925bb7b221461f3d1a3f17450aa42844539de24f5acc1b45b8c140f9467
+fspf_tag: 5930bffbd9ea2f1317e6872b032334db
+
+We get this information from the CAS for the current session. Key directory is **/image/aptsigner/fspf_path**, ...
+
+## Example: Signing APT packages
+
+Our objective is to sign Debian/Ubuntu packages without ever having the private key be visible in the clear. In particular, we do not want be able ourselves to change our minds and make the keys visible to us or others.
+
+**Approach:** We package the software in a container image that contains all code required to sign packages. To do so, we have two volumes:
+
+1) **packages**: contains the package to be signed
+
+2) **keyring**:
+
+
+## Sharing Keys
+
+Access to keys:
+
+- public key: share with everybody
+
+- encrpytion key: share access with token
+
+- generate token: with limited lifetime
+
+&copy; [scontain.com](http://www.scontain.com), December 2017. [Questions or Suggestions?](mailto:info@scontain.com)

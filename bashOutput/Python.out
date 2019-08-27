@@ -1,0 +1,114 @@
+
+
+## Python Interpreter
+
+To run the Python interpreter inside an enclave in interactive mode, first start the container:
+
+
+The execute python inside of the container:
+
+
+Since we set **SCONE_VERSION=1**, we get the following outputs[^2]:
+
+[^2]:
+   The other environment variables are explained below. Also read Section [Environment Variables](SCONE_ENV.md) for further details.
+
+
+Potential error messages:
+
+!!! error "Could not create enclave: Error opening SGX device"
+    Your machine / container does not support SGX. Set mode to automatic via **SCONE_MODE=AUTO**:
+    in AUTO mode, SCONE will use SGX enclaves when available and emulation mode otherwise. 
+
+!!! error "Killed"
+    Your machine / container has most likely too little memory: the Linux OOM (Out
+    Of Memory) killer, terminated your program. Try to reduce memory size by reducing
+    environment variable **SCONE_HEAP** appropriately.
+
+The meaning of **protected** versus **unprotected** library is explained in the [faq](faq/#what-are-protected-dynamic-libraries).
+
+## Running an application
+
+Say, you have a Python application called *myapp.py* in your current directory.
+To execute this with Pyhton 2.7 inside an enclave, you need to set some environment variables. 
+
+- To run Python inside of an enclave, you can set the environment variable **SCONE_MODE=HW** and **SCONE_ALPINE=1**.
+
+- To issue some debug messages that show that we are running inside an enclave, set **SCONE_VERSION=1**
+
+- In general, we only permit the loading of dynamic libraries during the startup of a program - these libraries are part of **MRENCLAVE**, i.e., the hash of the enclave. To enable the loading of dynamic libraries after startup (and without requiring the authentication of this library via the file shield), one can set **SCONE_ALLOW_DLOPEN=2**. For operations, the environment variables are set by the [CAS](SCONE_CAS.md) and you must set **SCONE_ALLOW_DLOPEN** either to **SCONE_ALLOW_DLOPEN=1** to enable loading of dynamic libraries or must not define **SCONE_ALLOW_DLOPEN**.
+
+- Python applications often require large heaps and large stacks. The current SGX CPUs (SGXv1) do not permit to increase the size of enclaves dynamically. This implies that enclaves might run out of memory if the initial enclave size was set to small. Selecting large enclave size by default would result in long startup times for all programs. SCONE permits to set the heap size via environment variable **SCONE_HEAP** and the stack size via **STACK_SIZE** at startup.
+
+!!! Note  "Python program exits"
+    Python does not always deal gracefully with out of memory situations: often, it terminates with some misleading error message if Python runs out of heap or stack memory. Please try to give python sufficient stack and heap size if this happens. We recommend to start with a large heap, like, **SCONE_HEAP=256M** to ensure that Python has sufficient heap. If your program runs without any problem with a large heap, you can try to reduce the heap size to speedup program startup times.**
+
+Note that you can set the environment variable of a process - in our case python - running inside a container with docker option **-e**:
+
+
+Will produce an output like
+
+
+## NumPy
+
+Let's see how we can install some extra packages that your python program might need. Let us focus on **NumPy** first, a very popular package for scientific computing. Note that the following steps you would typically perform as part of a [Dockerfile](SCONE_Dockerfile.md).
+
+First, we start the SCONE Python  image:
+
+
+This is a minimal image and you need to add some packages to be able to
+install packages that compile external code:
+
+
+We then install **numpy** inside of the container with the help of **pip**:
+
+
+This results in an output like
+
+
+Ok, let's try to execute some examples with **NumPy**. Let's  run Python inside an enclave, give it plenty of heap memory and ask SCONE to print some debug messages:
+
+
+during startup this issues the following messages
+
+
+Now, we can import numpy and execute some commands:
+
+
+## Cairo
+
+Let's look at another popular library: the **cairo** graphics library. **cairo**  is written in C and has 
+Python bindings provided by package **pycairo**. In this case, we need to install the C-library first:
+
+In Alpine Linux - which is the basis of the SCONE Python image - we can install cairo as follows:
+
+
+Now we can install the Python bindings of cairo with **pip**:
+
+
+We can now start Python again via 
+
+
+before we execute some cairo examples:
+
+
+This generates a file **example.png** in the working directory.
+
+## Example
+
+Let's look at another example:
+
+- We use *pip* to install a Python chess library.
+
+- Then we run Python inside of an enclave and  import the chess library. 
+
+- We use the Scholar's mate example from [https://pypi.python.org/pypi/python-chess](https://pypi.python.org/pypi/python-chess)
+
+[![asciicast](https://asciinema.org/a/kcXffCrpfAIjldgvnnSqtiE03.png)](https://asciinema.org/a/kcXffCrpfAIjldgvnnSqtiE03)
+
+
+## Limitation
+
+We do not yet support fork, i.e., you spawn new processes from within your Python programs. We are currently working on removing this limitation of SCONE. Until then, we expect you to have an external spawner. 
+
+&copy; [scontain.com](http://www.scontain.com), January 2019. [Questions or Suggestions?](mailto:info@scontain.com)

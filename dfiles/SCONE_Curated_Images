@@ -1,0 +1,3 @@
+FROM sconecuratedimages/helloworld
+COPY shellfiles/SCONE_Curated_Images.sh /
+CMD ["bash", "/SCONE_Curated_Images.sh"]

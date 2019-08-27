@@ -1,0 +1,15 @@
+
+
+Now, let us change the heap size via environment variable **SCONE_HEAP**
+by asking for a **2GB** heap:
+
+
+By default, SCONE does not permit to load dynamic libraries after startup. By setting **SCONE_ALLOW_DLOPEN=1**, we permit to load dynamic libraries during runtime. This changes **MrEnclave**:
+
+
+## Using debug output
+
+As an alternative to **SCONE_HASH=1** is to print **MrEnclave** via debug messages by setting **SCONE_VERSION=1**:
+
+
+&copy; [scontain.com](http://www.scontain.com), January 2018. [Questions or Suggestions?](mailto:info@scontain.com)

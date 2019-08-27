@@ -1,0 +1,108 @@
+
+
+- If you want to install a host and make this host a manager of a new or an existing swarm, you need to add option **--as-manager**.
+<br/>
+<br/>
+**Example:** To install host **faye** and create a new swarm with **faye** as a manager, just execute
+
+
+You can now check your swarm with [scone swarm](SCONE_SWARM.md) to see the members of your new swarm:
+
+
+- If you want to join an existing swarm as **a worker**, you have to specify option **--join MANAGER**
+<br/>
+<br/>
+**Example:** To install host **edna** and then join the swarm managed by manager **faye**, execute:
+
+
+You can now check your swarm with [scone swarm](SCONE_SWARM.md) to see the members of your new swarm:
+
+
+- If you want to join an existing swarm as **a manager**, you have to specify options **--join MANAGER --as-manager**
+<br/>
+<br/>
+**Example:** To install host **edna** and then join the swarm managed by manager **faye** as a manager, execute:
+
+
+### scone host swarm 
+
+In the above example, we installed host **dorothy** without joining any swarm. Sometimes one wants to revise this decision via command **swarm**. You can add an existing node to another swarm or you can as a node to become a manager of an existing or a new node. You need to set the options **--join MANAGER** and **--as-manager** as described for **scone host install**.
+
+**Example:** To add host **dorothy** to the swarm managed by host **faye**, just execute:
+
+
+**Example:** To add host **dorothy** to the swarm managed by host **faye** as a manager, just execute:
+
+
+### scone host check
+
+To check if a host is properly installed, you can use command **check**.
+
+**Example:** To check if host **faye** is properly installed, just execute:
+
+
+If the host is not properly installed, warnings or errors are issued. Typically, you can fix errors and warnings be reinstalling the host.
+
+### scone host reboot
+
+Sometimes, the installation of an host fails because the existing SGX driver cannot be removed. Most of the time, the issue is an enclave that currently uses the SGX driver. You can find these processes, for example, with Linux utility **lsof**:
+
+
+Sometimes removing an existing Intel SGX driver fails, despite the fact that no process seems to use the driver. In case this happens, one last resort is to reboot the machine. You issue the reboot manually or you can perform this with **scone host reboot**. 
+
+You must specify options **--name HOST** to indicate which host to reboot. Moreover,   **scone host reboot** will exit with an error unless you specify option **--force**.
+
+**Example:** To reboot host dorothy, just execute the following:
+
+
+If you want to wait until the host is again available, you can specify option **--wait**.
+
+**Example:** To reboot host dorothy and only return after the host has indeed rebooted, just execute the following:
+
+
+### scone host uninstall
+
+With the help of **scone host uninstall** you can force an host to 
+
+- leave any Docker swarm it might be part of 
+
+- uninstall the patched Docker engine
+
+- uninstall the patched SGX driver
+
+**NOTE: all containers that might run on this host, will be destroyed.**
+
+#### Options
+
+- You must define the name of the host to be uninstalled via option **--name HOST**. 
+
+- You must always give the **--force** option, otherwise, an error is issued.
+
+- If a node is part of a swarm, you must explicitly specify the option **--manager MANAGERHOST**. 
+
+- If the node is not part of a swarm, you must specify the option **--noswarm**. 
+
+**Note:** While other objects / commands support the use of environment variable **SCONE_MANAGER**
+as an implicit definition of **--manager $SCONE_MANAGER**, we decided that users must explicitly specify the manager of the swarm for command **uninstall**.
+
+**Example:** To uninstall a host **edna** that is part of a swarm managed by host **faye**, execute:
+
+
+**Example:** Let's assume that host **edna** is not part of a swarm. To uninstall host **edna**, execute:
+
+
+**Example:** To uninstall a host **faye** which is also manager can be tricky. First, make sure that all other nodes are removed from the swarm. To check the status, execute:
+
+
+If the output matches the above execute the following to uninstall host **faye** (both parameters **--manager MANAGERHOST** and **--noswarm** must be added):
+ 
+
+### General options
+
+- **--help** (or, **-h**): issue help message for object **host**. If a command is specified, it issues a help message specific to this command.
+
+- **--debug** (or, **-x**): display all commands that are executed by **scone host**. This can be helpful in case a command fails. When you submit a support request regarding a failed command, please send a copy of the output of the failing command with **--debug** set.
+
+- **--verbose** (or, **-v**): display all commands that are executed by **scone host**. This can be helpful in case commands fail. When you submit a support request regarding a failed command, please send a copy of the log of the output that includes 
+
+&copy; [scontain.com](http://www.scontain.com), December 2017. [Questions or Suggestions?](mailto:info@scontain.com)
