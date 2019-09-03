@@ -1,36 +1,9 @@
-
-
-!!! warning "The docker engine and the Intel SGX driver must be installed."
-    Read about how to [install a docker engine](dockerinstall.md) and to [install the Intel SGX driver](sgxinstall.md). 
-    In some installations, you might have to replace "docker" by "sudo docker".
-    To be able to use hardware mode, programs need access to the SGX device.
-    If your hosts have already a Intel SGX driver installed, you are all set.
-    Hardware mode is only supported in Linux, since the Intel SGX driver is only available on Linux.
-
-Now execute the following command inside the container to create the hello world program:
-
 cat > helloworld.c << EOF
 #include <stdio.h>
 int main() {
     printf("Hello World\n");
 }
 EOF
-
-Compile the program with:
-
-You can run this program:
-
-
-This will print *Hello World*. 
-
-Since we  have given the container access to the SGX driver, this runs in **hardware mode**.
-
-!!! note "Use this mode only for development and debugging"
-    The program **runs inside of a hardware enclave**. However, the enclave is in debug mode, i.e., one can actually introspect the content of the enclave.
-
-
-This will print something like:
-
 export SCONE_QUEUES=4
 export SCONE_SLOTS=256
 export SCONE_SIGPIPE=0
@@ -52,31 +25,11 @@ Configure options: --enable-shared --enable-debug --prefix=/mnt/ssd/franz/subtre
 
 Enclave hash: 9d601c360ce9b6100e35dc42ec2800c1c20478328a0d4450d8d5163c00289dea
 Hello World
-
-The output shows that SCONE is running in **hardware mode**: *export SCONE_MODE=hw*
-
-## Background Info
-
-For ease of use, we create all Docker images such that applications run inside of enclaves if enclaves are available ([**AUTO** mode](SCONE_ENV/#run-mode)). If SGX is not available, they run in simulation mode, i.e., outside of an enclave but all SCONE software is running. To disable simulation mode, you can set environment variable **SCONE_MODE=HW**:
-
 docker run --device=/dev/isgx -e "SCONE_MODE=HW" -it sconecuratedimages/crosscompilers
-
-If you would start your container in hardware mode but forget to give it access to the sgx device, i.e.,
-
 docker run -e "SCONE_MODE=HW" -it sconecuratedimages/crosscompilers
-
-compilation of the *helloworld* will succeed  but running the *helloworld* program will fail:
-
 bash-4.4# echo $SCONE_MODE
 HW
 bash-4.4# ls -l /dev/isgx
 ls: /dev/isgx: No such file or directory
 bash-4.4# ./helloworld
 [SCONE|ERROR] ./tools/starter-exec.c:993:_dl_main(): Could not create enclave: Error opening SGX device
-
-When running your software in operations, you would force the programs to run inside of enclaves: this can be enforced with the help of SCONE [configuration and attestation service](SCONE_CAS.md). 
-
-!!! info "Environment Variables"
-    To simplify the development with SCONE, you can control the behavior of SCONE with a set of environment variables, i.e., variables defined by your shell. Section  [SCONE Environment Variables](SCONE_ENV.md) describes these in details.
-
-&copy; [scontain.com](http://www.scontain.com), August 2018. [Questions or Suggestions?](mailto:info@scontain.com)

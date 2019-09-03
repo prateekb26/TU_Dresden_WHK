@@ -1,27 +1,3 @@
-
-
-If the driver is not installed, read Section [SCONE Host Setup](SCONE_HOST_SETUP.md) to learn how to install the SGX driver.
-
-### Ensure that the patched docker engine is installed
-
-We need *docker build* in this example. This command does not permit to map devices in the newly created containers. Hence, we provide a patched Docker engine [SCONE Host Setup](SCONE_HOST_SETUP.md).
-
-### Install the tutorial
-
-Clone the tutorial: 
-
-
-### Access to SCONE Curated Images
-
-Right now, access to the curated images is still restricted. Please, send email to scontain.ceo@gmail.com to request access.
-
-## Generate HelloAgain image (dynamically-linked)
-
-We first generate a *hello again* container image with a dynamically-linked secure program:
-
-
-The Dockerfile to generate the new image looks like this:
-
 FROM sconecuratedimages/crosscompilers:runtime
 
 RUN mkdir /hello
@@ -30,34 +6,6 @@ COPY dyn_hello_again /hello/
 
 
 CMD SCONE_MODE=HW SCONE_ALPINE=1 SCONE_VERSION=1 /hello/dyn_hello_again
-
-This assumes that we already generated the dynamically linked binary with
-an appropriately configured gcc. We generate this with the provided gcc image:
-
-
-We provide a little script that generates the image and pushes it to Docker hub (which should fail since you should not have the credentials):
-
-
-You can run this program inside of enclave (with the output of debug messages):
-
-
-This image is nicely small (only 11MB) since it only contains the runtime environment and no development environment.
-
-Running on a docker engine without access to SGX, we get an error message:
-
-
-
-### Screencast
-
-[![asciicast](https://asciinema.org/a/hg9jwPbAZSFjAIkwagf95z9Sj.png)](https://asciinema.org/a/hg9jwPbAZSFjAIkwagf95z9Sj)
-
-## Generate HelloAgain image (statically-linked)
-
-We generate a *hello again* container image. 
-
-
-The Dockerfile is quite straight forward:
-
 FROM sconecuratedimages/crosscompilers
 
 MAINTAINER Christof Fetzer "christof.fetzer@gmail.com"
@@ -69,28 +17,3 @@ COPY hello_again.c /hello/
 RUN cd /hello && scone-gcc hello_again.c -o again
 
 CMD ["/hello/again"]
-
-You can either execute all step manually (see below) or you can just execute
-
-
-and watch the outputs. The push of the image should fail since you should not have the access rights to push the image to Docker hub.
-
-We define the image name and tag that we want to generate:
-
-
-We build the image:
-
-
-
-We push it to docker hub (will fail unless you have the right to push *$FULLTAG*):
-
-
-
-Please change the image name to a repository on docker hub to which you can write:
-
-
-### Screencast
-
-[![asciicast](https://asciinema.org/a/9JhNIJsE4rnwwPdhbae1l41Lr.png)](https://asciinema.org/a/9JhNIJsE4rnwwPdhbae1l41Lr)
-
-&copy; [scontain.com](http://www.scontain.com), November 2017. [Questions or Suggestions?](mailto:info@scontain.com)

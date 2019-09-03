@@ -1,12 +1,3 @@
-
-
-## Running R
-
-To start R, just execute:
-
-
-This will output something like this:
-
 export SCONE_QUEUES=4
 export SCONE_SLOTS=256
 export SCONE_SIGPIPE=0
@@ -34,11 +25,6 @@ failed to set alternate signal stack
 R version 3.5.0 (2018-04-23) -- "Joy in Playing"
 Copyright (C) 2018 The R Foundation for Statistical Computing
 Platform: x86_64-pc-linux-gnu (64-bit)
-
-## Example
-
-Execute some first **R** program (taken from www.rexamples.com):
-
 a <- 42
 A <- a * 2  # R is case sensitive
 print(a)
@@ -47,15 +33,7 @@ if(A>a) # true, 84 > 42
 {
   cat(A, ">", a, "\n")
 } 
-
-This will result in an output:
-
 84 > 42
-
-# Example 2
-
-A somewhat more complex example from www.rexamples.com:
-
 #utility functions
 
 readinteger <- function()
@@ -91,9 +69,6 @@ while(guess != num)
     cat("It's smaller!\n")
   }
 }
-
-This will result in an otherput as follows:
-
 Enter an integer: 50
 It's bigger!
 Enter an integer: 75
@@ -108,5 +83,3 @@ Enter an integer: 80
 It's bigger!
 Enter an integer: 81
 Congratulations, 81 is right.
-
-&copy; [scontain.com](http://www.scontain.com), August 2018. [Questions or Suggestions?](mailto:info@scontain.com)

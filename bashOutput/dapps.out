@@ -1,4 +1,3 @@
-
 name: $SESSION
 digest: create
 
@@ -29,26 +28,6 @@ images:
           path: /encryptedInputs
         - name: encrypted-output-files
           path: /encryptedOutputs
-
-Note that in most cases you can start from a generic session template and you do not need to worry about the syntax and all the details of session descriptions.
-The session templates of trusted DApps look very similar to the session template above.
-The three differences are that
-
-- the **image name** will be updated,
-- the list of **mrenclaves** will be different, and
-- one might want to specify arguments passed to the trusted DApp (**key command**).
-
-## Building an DApp
-
-The [source code of this application](https://github.com/scontain/copy_dapp), you can retrieve from
-
-
-The source code of the trusted copy DApp is file [*copy_files.c*](https://github.com/scontain/copy_dapp/blob/master/copy_files.c).
-
-We build this program with the help of the standard
-**gcc** that is part of Alpine Linux (see the Dockerfile below). For convenience,
-we provide an Alpine image (i.e., sconecuratedimages/muslgcc) that has **gcc** preinstalled.
-
 FROM sconecuratedimages/muslgcc
 
 COPY copy_files.c  /
@@ -63,14 +42,6 @@ COPY --from=0 /copy_files /application
 RUN apk add curl bash unzip zip
 
 ENTRYPOINT ["/application.sh"]
-
-To run the application inside of an enclave, we need the SCONE
-runtime environment. This runtime is part of image **iexechub/sgx-scone:runtime**.
-Moreover, this image contains a script **/application.sh** that pulls
-the encrypted input and output volumes from some transfer service, 
-executes the application inside of an enclave. For testing, the script can push the encrypted output volume to a transfer service (see below).  
-
-The image **sconecuratedimages/iexecsgx:copy_demo**
 **MrEnclave** of the application and writes a **session template** *copy_dapp.yml*.
 
 ## Testing
@@ -130,8 +101,6 @@ You can now download this (if running a **bash** shell)
 
 
 We can now look at the files in OUTPUTS directory:
-
-
 
 
 

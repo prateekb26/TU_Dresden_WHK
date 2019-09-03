@@ -40,6 +40,7 @@ def removeDirectory(dirName):
 
 #Function to get all .md files and create .sh files
 def getAllFiles():
+    output=""
     for filepath in glob.glob('sconedocs/docs/*.md'):
         #print filepath
         head, filename = os.path.split(filepath)
@@ -90,21 +91,29 @@ def extractCode(rawContent):
             code = code + "\n" + "echo next"
     return code
     
+#If bash is not found then only enter the loop and if bash is found set markbash flag =1
+#if instead only ''' is found and it is beginning of the block and bash is not marked then we found correct block
+#if beginning is marked and bash is not marked then we start copying the output until we find '''
+#if bash is marked and we find ''' then it means this is end of bash block hence markbash=0
 def extractOutput(rawContent):
-    code = ""
-    count=0
+    tcode = ""
+    markbeginning=0
+    code=""
+    markbash=0;
     for i in rawContent:
-        if (i.find("```bash") == -1 and i.find("```")!=-1):
-            markbeginning = 1
-        if (markbeginning == 1):
-            print tcode
-            tcode = tcode + "\n" + i
-        if (markbeginning == 1 and i.find("```bash") != -1):
-            markbeginning=0
-            tcode=""
-        if (i.find("```") != -1 and markbeginning==1):
-            count=2            
-    return code
+        if(i.find("```bash") == -1):
+            if(i.find("```")!=-1 and markbeginning==0 and markbash ==0):
+                markbeginning = 1   
+            elif(i.find("```")==-1 and markbeginning==1 and markbash==0):
+                if(tcode != '\n'):
+                    tcode = tcode + i + "\n"   
+            elif(i.find("```")!=-1 and markbeginning==1 and markbash==0):
+                markbeginning = 0
+            elif(i.find("```")!=-1 and markbash==1):
+                markbash=0
+        elif(i.find("```bash") != -1):
+            markbash = 1;
+    return tcode
 
 
 def getAllExtractedShellDockerfiles():
@@ -170,7 +179,7 @@ def executeDocker(nameDfile):
     container = client.containers.get(dlogs)
     
     print "Sleeping for 5 seconds to fetch logs"
-    print container.logs()
+    #print container.logs()
     
     s = open("dlogs/"+nameDfile,"w")
     s.write(container.logs())
@@ -178,12 +187,41 @@ def executeDocker(nameDfile):
     print "Removing the container " + dPath
     client.containers.prune()
     s.close()
+
+def checkAllOutput():
+    for filepath in glob.glob('dlogs/*'):
+        #print filepath
+        head, filename = os.path.split(filepath)
+        checkOutput(filename)
+        #print filename
+        
+def checkOutput(filename):
+    passflag=1
+    DlogFile=open("dlogs/"+filename).read()
+    f = open("bashOutput/"+filename+".out")
+    print "***********Checking for***********" + filename
+
+    for i in f.read().splitlines():
+        i=i.strip()
+        if (i!="\n" and i!= ""):
+            if(i in DlogFile):
+                print "output found = " + i
+            else:
+                print "output not found = "+ i
+                passflag=0
     
+    if passflag == 0:
+        print "Test failed output is different from actual execution" + filename
+    else:
+        print "Test Passed output " + filename
+
 def main():
     setup()
     getAllFiles()
     getAllExtractedShellDockerfiles()
     executeAllDockerfiles()
+    checkAllOutput()
+    
     #executeDocker("C")
 
     #cleanup()

@@ -1,20 +1,3 @@
-
-
-Let's create some program that stores a secret (**MYBIGS**) in a local variable *secret*:
-
-
-Compile this program with the SCONE crosscompiler (i.e., gcc):
-
-
-## Simulation Mode
-
-You can run this program in **SIMULATION MODE**, i.e., this program does not protect your secrets:
-
-
-Log into a different terminal on your **host**. Let us figure out the process ID of the mysecret program:
-
-
-Now, we can dump the memory of this process via the */proc* filesystem. You can determine
 the memory is stored in */proc/$SPID/mem*. We can use the following
 Python program to write all pages to *stdout*: 
 
