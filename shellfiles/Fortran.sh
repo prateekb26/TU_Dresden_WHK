@@ -1,10 +1,7 @@
 
 echo next
 echo next
-$ scone gfortran --help
-Usage: x86_64-linux-musl-gfortran [options] file...
-Options:
-...
+scone gfortran --help
 echo next
 cat > gcd.f << EOF
 *     euclid.f (FORTRAN 77)

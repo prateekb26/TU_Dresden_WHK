@@ -1,0 +1,15 @@
+Expected output found as ===export SCONE_QUEUES=4
+Expected output found as ===export SCONE_SLOTS=256
+Expected output found as ===export SCONE_SIGPIPE=0
+Expected output found as ===export SCONE_MMAP32BIT=0
+Expected output found as ===export SCONE_SSPINS=100
+Expected output found as ===export SCONE_SSLEEP=4000
+Expected output found as ===export SCONE_HEAP=67108864
+Expected output found as ===export SCONE_CONFIG=/etc/sgx-musl.conf
+Expected output found as ===export SCONE_MODE=sim
+Expected output found as ===export SCONE_ALLOW_DLOPEN=no
+Expected output found as ===export SCONE_MPROTECT=no
+Expected output found as ===Branch: master
+Expected output found as ===A?
+Expected output found as ===B?
+Expected output found as ===The GCD of          10  and          15  is           5 .

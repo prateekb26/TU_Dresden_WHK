@@ -13,6 +13,7 @@ def setup():
     createDirectory("dfiles")
     createDirectory("dlogs")
     createDirectory("bashOutput")
+    createDirectory("testSummary")
     
 def cleanup():
     removeDirectory("bashCommands")
@@ -48,7 +49,6 @@ def getAllFiles():
         if (filename == "C++") :
             
             filename=filename.replace("++","plusplus")
-            print filename
         #print filename
         #Split lines
         prepareContent=prepareFile(filepath)
@@ -65,7 +65,7 @@ def getAllFiles():
             s.write(output)
             s.close()
         else:
-            print filename + ".md doesn't not contain any shell code hence no shell file will be generated"
+            print filename + ".md doesn't not contain any shell code hence no test will be conducted for these file"
 
 #Function to Read content to be read from .Md files
 def prepareFile(path):
@@ -146,13 +146,19 @@ def makeDockerFile(dockerFile,rep):
     n.write("CMD [\"bash\", \"/"+ dockerFile+".sh\"]"+"\n")
     n.close()
 
+#File Checked
+#C.md
+#C++.md
+#Fortan.me
+#
+
 def executeAllDockerfiles():
 
     for filepath in glob.glob('dfiles/*'):
         #print filepath
         head, filename = os.path.split(filepath)
         #print filename
-        if(filename == "C" or filename == "Cplusplus") :
+        if(filename == "Fortran" or filename =="C" or filename == "Cplusplus") :
             executeDocker(filename)
 
 def executeDocker(nameDfile):
@@ -197,24 +203,47 @@ def checkAllOutput():
         
 def checkOutput(filename):
     passflag=1
+    numberOfTestcases =0
+    numberOfTestcasesPassed=0
+    numberOfTestcasesFailed=0
+    passFile = open("testSummary/"+filename+".pass","w")
+    failFile = open("testSummary/"+filename+".fail","w")
+    summaryFile = open("testSummary/"+filename+".summary","w")
     DlogFile=open("dlogs/"+filename).read()
     f = open("bashOutput/"+filename+".out")
-    print "***********Checking for***********" + filename
 
     for i in f.read().splitlines():
         i=i.strip()
         if (i!="\n" and i!= ""):
+            numberOfTestcases = numberOfTestcases + 1
             if(i in DlogFile):
-                print "output found = " + i
+                numberOfTestcasesPassed = numberOfTestcasesPassed + 1
+                temp = "Expected output found as ===" + i + "\n"
+                passFile.write(temp)
             else:
-                print "output not found = "+ i
+                temp = "Expected output not found in the file as === "+ i + "\n"
                 passflag=0
+                numberOfTestcasesFailed = numberOfTestcasesFailed +1
+                failFile.write(temp)
     
-    if passflag == 0:
-        print "Test failed output is different from actual execution" + filename
-    else:
-        print "Test Passed output " + filename
-
+    if passflag != 0:
+        #print "Test Passed output " + filename
+        os.remove("testSummary/"+filename+".fail")
+        
+    print "=======================Test Summary for " + filename + "======================="
+    print "NumberOfTestcases : %d "  %(numberOfTestcases)
+    print "NumberOfTestcasesPassed : %d"  %(numberOfTestcasesPassed)
+    print "NumberOfTestcasesFailed : %d "  %(numberOfTestcasesFailed)
+    print "**********************Test Summary End**********************"
+    summaryFile.write("=======================Test Summary======================="+ "\n")
+    summaryFile.write("NumberOfTestcases : %d \n"  %(numberOfTestcases))
+    summaryFile.write("NumberOfTestcasesPassed : %d \n"  %(numberOfTestcasesPassed))
+    summaryFile.write("NumberOfTestcasesFailed : %d \n"  %(numberOfTestcasesFailed))
+    summaryFile.write("=======================Test Summary=======================")
+    passFile.close()
+    failFile.close()
+    summaryFile.close()
+    
 def main():
     setup()
     getAllFiles()

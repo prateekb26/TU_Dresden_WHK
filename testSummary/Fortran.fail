@@ -1,0 +1,7 @@
+Expected output not found in the file as === export SCONE_KERNEL=0
+Expected output not found in the file as === export SCONE_STACK=81920
+Expected output not found in the file as === export SCONE_SGXBOUNDS=no
+Expected output not found in the file as === export SCONE_VARYS=no
+Expected output not found in the file as === Revision: b1e014e64b4d332a51802580ec3252370ffe44bb (Wed May 30 15:17:05 2018 +0200)
+Expected output not found in the file as === Configure options: --enable-shared --enable-debug --prefix=/mnt/ssd/franz/subtree-scone2/built/cross-compiler/x86_64-linux-musl
+Expected output not found in the file as === Enclave hash: e9c60984724c6d5ffc8cc8a6ba4377910e63c8534ef24b87d0727e712809ba50

@@ -3,10 +3,7 @@ echo next
 docker pull sconecuratedimages/crosscompilers
 docker run --device=/dev/isgx -it sconecuratedimages/crosscompilers
 echo next
-$ scone gfortran --help
-Usage: x86_64-linux-musl-gfortran [options] file...
-Options:
-...
+scone gfortran --help
 echo next
 cat > gcd.f << EOF
 *     euclid.f (FORTRAN 77)
