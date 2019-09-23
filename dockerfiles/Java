@@ -1,0 +1,3 @@
+FROM sconecuratedimages/apps:8-jdk-alpine
+COPY shellfilesforDocker/Java.sh /
+CMD ["sh", "/Java.sh"]

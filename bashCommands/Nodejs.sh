@@ -1,9 +1,13 @@
 
-echo next
+
 docker pull sconecuratedimages/apps:node-8.9.4-alpine
-echo next
+
 docker run -it --device=/dev/isgx sconecuratedimages/apps:node-8.9.4-alpine sh
-echo next
+
+apk add --no-cache nodejs-npm
+
+export SCONE_HEAP=1G
+
 mkdir myapp
 cd myapp
 cat > package.json << EOF
@@ -19,9 +23,9 @@ cat > package.json << EOF
   "license": "ISC"
 }
 EOF
-echo next
+
 npm install express --save
-echo next
+
 cat > app.js << EOF
 var express = require('express');
 var app = express();
@@ -32,38 +36,14 @@ app.listen(3000, function () {
   console.log('Example app listening on port 3000!');
 });
 EOF
-echo next
-SCONE_VERSION=1 node app.js
-echo next
-export SCONE_QUEUES=4
-export SCONE_SLOTS=256
-export SCONE_SIGPIPE=0
-export SCONE_MMAP32BIT=0
-export SCONE_SSPINS=100
-export SCONE_SSLEEP=4000
-export SCONE_KERNEL=0
-export SCONE_HEAP=4294967296
-export SCONE_STACK=4194304
-export SCONE_CONFIG=/etc/sgx-musl.conf
-export SCONE_MODE=hw
-export SCONE_SGXBOUNDS=no
-export SCONE_VARYS=no
-export SCONE_ALLOW_DLOPEN=yes (unprotected)
-export SCONE_MPROTECT=no
-Revision: e349ed6e4821f0cbfe895413c616409848216173 (Wed Feb 28 19:28:04 2018 +0100)
-Branch: master
-Configure options: --enable-shared --enable-debug --prefix=/builds/scone/subtree-scone/built/cross-compiler/x86_64-linux-musl
 
-Enclave hash: 28cf4f0953ba54af02b9d042fa2ec88a832d749ae4e5395cabd50369e72a5dcb
-Example app listening on port 3000!
-echo next
+SCONE_VERSION=1 node app.js
+
 docker exec -it $(docker ps -l -q) sh
-echo next
+
 apk add --no-cache curl
 curl localhost:3000/
-echo next
-Hello World!/ #
-echo next
+
 FROM sconecuratedimages/apps:node-8.9.4-alpine
 ENV SCONE_HEAP=1G
 EXPOSE 3000
@@ -92,11 +72,11 @@ RUN apk add --no-cache nodejs-npm \
   && echo "});" >> app.js 
 
 CMD SCONE_VERSION=1 node /myapp/app.js
-echo next
+
 docker build -t myapp .
-echo next
+
 docker run -d -p 3000:3000 myapp
-echo next
+
 curl localhost:3000
-echo next
+
 Hello World!

@@ -1,0 +1,3 @@
+FROM sconecuratedimages/crosscompilers
+COPY shellfilesforDocker/Fortran.sh /
+CMD ["sh", "/Fortran.sh"]

@@ -1,7 +1,8 @@
 
-echo next
+
+docker pull sconecuratedimages/crosscompilers
 docker run --device=/dev/isgx -it -p 8080:8080 sconecuratedimages/crosscompilers
-echo next
+
 cat > web-srv.go << EOF
 package main
 
@@ -23,21 +24,21 @@ func main() {
     http.ListenAndServe(":8080", nil)
 }
 EOF
-echo next
+
 SCONE_HEAP=1G scone-gccgo web-srv.go -O3 -o web-srv-go -g
-echo next
+
 SCONE_VERSION=1 ./web-srv-go &
-echo next
+
 curl localhost:8080/SCONE
-echo next
+
 curl localhost:8080/EXIT
-echo next
+
 docker run --cap-add SYS_PTRACE -it -p 8080:8080 -v "$PWD"/EXAMPLE:/usr/src/myapp -w /usr/src/myapp  sconecuratedimages/crosscompilers
-echo next
+
 scone-gdb ./web-srv-go
-echo next
+
 run
-echo next
+
 ^C
 Thread 1 "web-srv-go" received signal SIGINT, Interrupt.
 0x00007f17870f69dd in pthread_join (threadid=139739022911232, thread_return=0x7ffe1c807928) at pthread_join.c:90
@@ -47,7 +48,7 @@ Thread 1 "web-srv-go" received signal SIGINT, Interrupt.
 #1  0x0000002000004053 in main (argc=1, argv=0x7ffe1c807c18, envp=0x7ffe1c807c28) at ./tools/starter-exec.c:764
 (gdb) cont
 Continuing.
-echo next
+
 scone-gdb ./web-srv-go
 ...
 [SCONE] Initializing...
@@ -85,7 +86,7 @@ Thread 6 "web-srv-go" received signal SIGILL, Illegal instruction.
 Thread 6 "web-srv-go" received signal SIGILL, Illegal instruction.
 
 Thread 6 "web-srv-go" received signal SIGILL, Illegal instruction.
-echo next
+
 [Switching to Thread 0x7fb6cb506700 (LWP 248)]
 
 Thread 7 "web-srv-go" hit Breakpoint 1, main.handler (w=..., r=0x100909e300) at web-srv.go:8

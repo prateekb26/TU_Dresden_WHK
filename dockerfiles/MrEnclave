@@ -1,0 +1,3 @@
+FROM sconecuratedimages/crosscompilers
+COPY shellfilesforDocker/MrEnclave.sh /
+CMD ["sh", "/MrEnclave.sh"]

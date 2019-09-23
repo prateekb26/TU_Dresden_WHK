@@ -1,5 +1,5 @@
 
-echo next
+
 $ sudo tee  /etc/sgx-musl.conf << EOF
 Q 4
 e -1 0 0
@@ -11,7 +11,7 @@ s -1 2 0
 e -1 3 0
 s -1 3 0
 EOF
-echo next
+
 export SCONE_QUEUES=4
 export SCONE_SLOTS=256
 export SCONE_SIGPIPE=0

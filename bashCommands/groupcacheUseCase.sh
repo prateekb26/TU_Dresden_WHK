@@ -1,12 +1,12 @@
 
-echo next
+
 docker run --device=/dev/isgx -it  sconecuratedimages/crosscompilers
-echo next
+
 apk update
 apk add go git curl
-echo next
+
 go get -compiler gccgo -u github.com/golang/groupcache
-echo next
+
 	cat > groupcache.go << EOF
 	// Simple groupcache example: https://github.com/golang/groupcache
 	// Running 3 instances:
@@ -66,12 +66,12 @@ echo next
 		http.ListenAndServe(*addr, nil)
 	}
 	EOF
-echo next
+
 export SCONE_HEAP=1G
 go build -compiler gccgo -buildmode=exe -gccgoflags -g groupcache.go
-echo next
+
 ./groupcache -addr=:8080 -pool=http://127.0.0.1:8080 &
-echo next
+
 curl localhost:8080/color?name=green
 #00FF00
 curl localhost:8080/color?name=red

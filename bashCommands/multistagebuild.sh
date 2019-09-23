@@ -1,5 +1,5 @@
 
-echo next
+
 cat > Dockerfile << EOF
 FROM sconecuratedimages/crosscompilers
 RUN apk update \
@@ -18,9 +18,9 @@ COPY --from=0 /opt/scone/cross-compiler/x86_64-linux-musl/lib/libc.scone-x86_64.
 COPY --from=0 /etc/sgx-musl.conf /etc/sgx-musl.conf
 CMD sh -c "SCONE_HEAP=1G /groupcache"
 EOF
-echo next
+
 docker build --pull -t groupcache .
-echo next
+
 docker run --rm --publish 8080:8080  groupcache
-echo next
+
 curl localhost:8080/color?name=green

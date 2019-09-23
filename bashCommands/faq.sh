@@ -1,7 +1,7 @@
 
-echo next
+
 docker run --rm sconecuratedimages/apps:check_cpuid
-echo next
+
 cat > /etc/sgx-musl.conf << EOF
 Q 1
 e -1 0 0

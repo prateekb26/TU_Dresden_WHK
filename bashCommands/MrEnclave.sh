@@ -1,16 +1,14 @@
 
-echo next
-> docker run -it  sconecuratedimages/apps:python-2.7-alpine3.6 sh
-$ SCONE_HASH=1 SCONE_ALPINE=1 /usr/local/bin/python
-5430b3c0ab0e8a24ea4481e6022704cdbbcff68f6457eb0cdeaecfd734fec541
-echo next
-$ SCONE_HEAP=2G SCONE_HASH=1 SCONE_ALPINE=1 /usr/local/bin/python
-aa25d6e1863819fca72f4f3315131ba4a438d1e1643c030190ca665215912465
-echo next
-$ SCONE_ALLOW_DLOPEN=1 SCONE_HEAP=2G SCONE_HASH=1 SCONE_ALPINE=1 /usr/local/bin/python
-9c56db536e046a5fb84a5c482ce86e6592071dff75dc0e3eb27d701cf2c40508
-echo next
-$ SCONE_ALLOW_DLOPEN=1 SCONE_HEAP=2G SCONE_VERSION=1 SCONE_ALPINE=1 /usr/local/bin/python
+
+docker pull sconecuratedimages/crosscompilers
+docker run -it  sconecuratedimages/apps:python-2.7-alpine3.6 sh
+SCONE_HASH=1 SCONE_ALPINE=1 /usr/local/bin/python 5430b3c0ab0e8a24ea4481e6022704cdbbcff68f6457eb0cdeaecfd734fec541
+
+SCONE_HEAP=2G SCONE_HASH=1 SCONE_ALPINE=1 /usr/local/bin/python aa25d6e1863819fca72f4f3315131ba4a438d1e1643c030190ca665215912465
+
+SCONE_ALLOW_DLOPEN=1 SCONE_HEAP=2G SCONE_HASH=1 SCONE_ALPINE=1 /usr/local/bin/python 9c56db536e046a5fb84a5c482ce86e6592071dff75dc0e3eb27d701cf2c40508
+
+SCONE_ALLOW_DLOPEN=1 SCONE_HEAP=2G SCONE_VERSION=1 SCONE_ALPINE=1 /usr/local/bin/python
 export SCONE_QUEUES=4
 export SCONE_SLOTS=256
 export SCONE_SIGPIPE=0

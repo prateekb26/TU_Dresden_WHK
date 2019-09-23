@@ -1,5 +1,5 @@
 
-echo next
+
 cat > Dockerfile << EOF
 FROM sconecuratedimages/crosscompilers
 
@@ -11,7 +11,7 @@ RUN gcc -o helloworld helloworld.c
 
 CMD bash -c "SCONE_VERSION=1 /helloworld"
 EOF
-echo next
+
 docker build --pull -t helloworld .
-echo next
+
 docker run --device=/dev/isgx --rm helloworld

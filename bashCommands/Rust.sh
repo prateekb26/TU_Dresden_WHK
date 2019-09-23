@@ -1,24 +1,24 @@
 
-echo next
+
 > docker run -it sconecuratedimages/crosscompilers
 $ scone rustc --version
 rustc 1.20.0 (f3d6973f4 2017-08-27)
-echo next
+
 $ mkdir ~/projects
 $ cd ~/projects
 $ mkdir hello_world
 $ cd hello_world
-echo next
+
 $ cat > main.rs << EOF
 fn main() {
     println!("Hello, world!");
 }
 EOF
-echo next
+
 $ scone rustc main.rs
 $ ls
 main  main.rs
-echo next
+
 $ SCONE_MODE=HW SCONE_VERSION=1 ./main
 export SCONE_QUEUES=4
 export SCONE_SLOTS=256
@@ -36,7 +36,7 @@ export SCONE_ALLOW_DLOPEN=no
 export SCONE_ALLOW_DLOPEN2=no
 
 Hello, world!
-echo next
+
 $ scone cargo build --target=x86_64-scone-linux-musl
-echo next
+
 $ OPENSSL_LIB_DIR=/libressl-2.4.5 OPENSSL_INCLUDE_DIR=/libressl-2.4.5/include/ OPENSSL_STATIC=1 PKG_CONFIG_ALLOW_CROSS=1 scone-cargo build --target=scone 

@@ -1,0 +1,3 @@
+FROM sconecuratedimages/crosscompilers
+COPY shellfilesforDocker/memory_dump.sh /
+CMD ["sh", "/memory_dump.sh"]

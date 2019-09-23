@@ -1,11 +1,11 @@
 
-echo next
+
 docker pull sconecuratedimages/apps:python-2-alpine3.6
-echo next
+
 docker run --rm -it -v "$PWD":/usr/src/myapp -w /usr/src/myapp sconecuratedimages/apps:python-2-alpine3.6 sh
-echo next
+
 SCONE_HEAP=256M SCONE_VERSION=1 python
-echo next
+
 export SCONE_QUEUES=4
 export SCONE_SLOTS=256
 export SCONE_SIGPIPE=0
@@ -31,30 +31,30 @@ Python 2.7.13 (default, Jun  1 2018, 13:20:58)
 [GCC 7.3.0] on linux2
 Type "help", "copyright", "credits" or "license" for more information.
 >>>
-echo next
+
 docker run --rm -v "$PWD":/usr/src/myapp -w /usr/src/myapp -e SCONE_HEAP=256M SCONE_MODE=HW -e SCONE_ALLOW_DLOPEN=2 -e SCONE_ALPINE=1 -e SCONE_VERSION=1 sconecuratedimages/apps:python-2-alpine3.6 python myapp.py
-echo next
+
 export SCONE_QUEUES=4
 export SCONE_SLOTS=256
 export SCONE_SIGPIPE=0
 export SCONE_MMAP32BIT=0
 ...
-echo next
+
 docker run -it --rm sconecuratedimages/apps:python-2-alpine3.6 sh
-echo next
+
 apk add --no-cache bats libbsd openssl musl-dev build-base
-echo next
+
 pip install numpy==1.14.5
-echo next
+
 Collecting numpy==1.14.5
   Downloading https://files.pythonhosted.org/packages/d5/6e/f00492653d0fdf6497a181a1c1d46bbea5a2383e7faf4c8ca6d6f3d2581d/numpy-1.14.5.zip (4.9MB)
     100% |████████████████████████████████| 4.9MB 375kB/s
 Installing collected packages: numpy
   Running setup.py install for numpy ... done
 Successfully installed numpy-1.14.5
-echo next
+
 SCONE_HEAP=256M SCONE_VERSION=1 python
-echo next
+
 export SCONE_QUEUES=4
 export SCONE_SLOTS=256
 export SCONE_SIGPIPE=0
@@ -78,7 +78,7 @@ Python 2.7.14 (default, Dec 19 2017, 22:29:22)
 [GCC 6.4.0] on linux2
 Type "help", "copyright", "credits" or "license" for more information.
 >>> 
-echo next
+
 >>> import numpy as np
 >>> a = np.arange(15).reshape(3, 5)
 >>> a
@@ -96,9 +96,9 @@ array([[ 0,  1,  2,  3,  4],
 >>> type(a)
 <type 'numpy.ndarray'>
 >>> 
-echo next
+
 apk add --no-cache  cairo-dev cairo 
-echo next
+
 fetch http://dl-cdn.alpinelinux.org/alpine/v3.7/main/x86_64/APKINDEX.tar.gz
 fetch http://dl-cdn.alpinelinux.org/alpine/v3.7/community/x86_64/APKINDEX.tar.gz
 (1/55) Installing expat-dev (2.2.5-r0)
@@ -109,9 +109,9 @@ Executing glib-2.54.2-r0.trigger
 No schema files found: doing nothing.
 OK: 297 MiB in 112 packages
 $ 
-echo next
+
 pip install pycairo
-echo next
+
 Collecting pycairo
   Downloading pycairo-1.15.4.tar.gz (178kB)
     100% |████████████████████████████████| 184kB 1.7MB/s 
@@ -121,9 +121,9 @@ Building wheels for collected packages: pycairo
 Successfully built pycairo
 Installing collected packages: pycairo
 Successfully installed pycairo-1.15.4
-echo next
+
 SCONE_HEAP=256M SCONE_VERSION=1 python
-echo next
+
 >>> import cairo
 >>> import math
 >>> WIDTH, HEIGHT = 256, 256

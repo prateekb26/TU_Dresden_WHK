@@ -1,8 +1,8 @@
 
-echo next
+
 docker pull sconecuratedimages/crosscompilers
 docker run --device=/dev/isgx -it sconecuratedimages/crosscompilers
-echo next
+
 cat > mysecret.c << EOF
 #include <stdio.h>
 #include <unistd.h>
@@ -24,13 +24,13 @@ int main() {
         sleep(1); // loop forever
 }
 EOF
-echo next
+
 gcc -g -o mysecret mysecret.c
-echo next
+
 SCONE_VERSION=1 SCONE_MODE=SIM SCONE_HEAP=128K SCONE_STACK=1K ./mysecret
-echo next
+
 SPID=$(ps -a | grep -v grep | grep mysecret | awk  '{print $1}')
-echo next
+
 cat > dumpstack.py << EOF
 import sys, os, string, re
 
@@ -62,13 +62,13 @@ for line in maps_file.readlines():  # for each mapped region
                     pass
 sys.stderr.write("\n")
 EOF
-echo next
+
 sudo python dumpstack.py $SPID | strings -n 5 | grep MYBI
-echo next
+
 SCONE_VERSION=1 SCONE_MODE=HW SCONE_HEAP=128K SCONE_STACK=1K ./mysecret
-echo next
+
 SPID=$(ps -a | grep -v grep | grep mysecret | awk  '{print $1}')
-echo next
+
 sudo python dumpstack.py $SPID | strings -n 5 | grep MYBI
-echo next
+
 sudo python dumpstack.py $SPID | strings -n 5 | grep THIS_IS_NOT_SECRET

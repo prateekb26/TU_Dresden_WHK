@@ -1,0 +1,3 @@
+FROM sconecuratedimages/helloworld
+COPY shellfilesforDocker/SCONE_Curated_Images.sh /
+CMD ["sh", "/SCONE_Curated_Images.sh"]

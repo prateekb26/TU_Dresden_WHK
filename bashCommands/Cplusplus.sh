@@ -1,10 +1,10 @@
 
-echo next
+
 docker pull sconecuratedimages/crosscompilers
 docker run --device=/dev/isgx -it sconecuratedimages/crosscompilers
-echo next
+
 scone g++ --help
-echo next
+
 cat > sqrt.cc << EOF
 #include <iostream>
 #include <cmath>
@@ -21,7 +21,7 @@ int main() {
     return 0;
 }
 EOF
-echo next
+
 scone g++ sqrt.cc -o sqrt
-echo next
+
 SCONE_VERSION=1 ./sqrt

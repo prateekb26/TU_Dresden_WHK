@@ -1,10 +1,10 @@
 
-echo next
+
 docker pull sconecuratedimages/crosscompilers
 docker run --device=/dev/isgx -it sconecuratedimages/crosscompilers
-echo next
+
 scone gcc --help
-echo next
+
 cat > fib.c << EOF
 #include <stdio.h>
 #include <stdlib.h>
@@ -24,7 +24,7 @@ int main(int argc, char** argv) {
    printf("\n");
 }
 EOF
-echo next
+
 scone gcc fib.c -o fib
-echo next
+
 SCONE_VERSION=1 ./fib 23

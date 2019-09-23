@@ -1,0 +1,3 @@
+FROM sconecuratedimages/crosscompilers
+COPY shellfilesforDocker/GO.sh /
+CMD ["sh", "/GO.sh"]

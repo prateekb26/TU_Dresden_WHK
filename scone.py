@@ -9,18 +9,18 @@ import time
 
 def setup():
     createDirectory("bashCommands")
-    createDirectory("shellfiles")
-    createDirectory("dfiles")
-    createDirectory("dlogs")
-    createDirectory("bashOutput")
+    createDirectory("shellfilesforDocker")
+    createDirectory("dockerfiles")
+    createDirectory("dockerexecutionlogs")
+    createDirectory("bashOutputtocompare")
     createDirectory("testSummary")
     
 def cleanup():
     removeDirectory("bashCommands")
-    removeDirectory("shellfiles")
-    removeDirectory("dfiles")
-    removeDirectory("dlogs")
-    removeDirectory("bashOutput")
+    removeDirectory("shellfilesforDocker")
+    removeDirectory("dockerfiles")
+    removeDirectory("dockerexecutionlogs")
+    removeDirectory("bashOutputtocompare")
 #Function to create Directory if not existing
 def createDirectory(dirName): 
     try:
@@ -61,7 +61,7 @@ def getAllFiles():
             f.write(code)
             f.close()
             #WriteOutput to a file
-            s = open("bashOutput/"+filename+".out", "w")
+            s = open("bashOutputtocompare/"+filename+".out", "w")
             s.write(output)
             s.close()
         else:
@@ -88,7 +88,7 @@ def extractCode(rawContent):
         #find the first ''' to start saving the code 
         if (i.find("```bash") != -1):
             count = count + 1
-            code = code + "\n" + "echo next"
+            code = code + "\n"
     return code
     
 #If bash is not found then only enter the loop and if bash is found set markbash flag =1
@@ -128,7 +128,7 @@ def getAllExtractedShellDockerfiles():
 #Function to create actual docker files and bashFiles
 def createFiles(name):
     f=open("bashCommands/"+name+".sh","r")
-    s = open("shellfiles/"+name+".sh","w")
+    s = open("shellfilesforDocker/"+name+".sh","w")
     for i in f.read().splitlines():
         if (i.find("docker pull") != -1):
             m=re.search('docker pull\s+(.*)',i)
@@ -140,10 +140,10 @@ def createFiles(name):
     #executeDocker(name)
     
 def makeDockerFile(dockerFile,rep):
-    n = open("dfiles/"+dockerFile, "w")
+    n = open("dockerfiles/"+dockerFile, "w")
     n.write("FROM "+ rep+"\n")
-    n.write("COPY shellfiles/"+dockerFile+".sh /"+"\n")
-    n.write("CMD [\"bash\", \"/"+ dockerFile+".sh\"]"+"\n")
+    n.write("COPY shellfilesforDocker/"+dockerFile+".sh /"+"\n")
+    n.write("CMD [\"sh\", \"/"+ dockerFile+".sh\"]"+"\n")
     n.close()
 
 #File Checked
@@ -154,19 +154,19 @@ def makeDockerFile(dockerFile,rep):
 
 def executeAllDockerfiles():
 
-    for filepath in glob.glob('dfiles/*'):
+    for filepath in glob.glob('dockerfiles/*'):
         #print filepath
         head, filename = os.path.split(filepath)
         #print filename
-        if(filename == "Fortran" or filename =="C" or filename == "Cplusplus") :
+        if(filename == "C") :
             executeDocker(filename)
 
 def executeDocker(nameDfile):
     
     client = docker.from_env()
-    dPath = "dfiles/"+nameDfile
+    dPath = "dockerfiles/"+nameDfile
     dTag= "dockertagfor"+nameDfile.lower()
-    dlogs = "dockerlogs"+nameDfile.lower()
+    dockerexecutionlogs = "dockerlogs"+nameDfile.lower()
     
     print "\n\nPulling the container for " + dPath +" with tag " + dTag+ " it will take time"
     try:
@@ -175,19 +175,19 @@ def executeDocker(nameDfile):
         print "Error Executing Docker "
     
     
-    print "Executing the container " + dPath + "and dropping logs at " + dlogs
+    print "Executing the container " + dPath + " and dropping logs at " + dockerexecutionlogs
     try:
-        container = client.containers.run(dTag,name=dlogs)
+        container = client.containers.run(dTag,name=dockerexecutionlogs)
     except docker.errors.APIError as Err:
         print "Error running Docker "
-                
+      
     print "Fetching the Execution logs of the container " + dPath
-    container = client.containers.get(dlogs)
+    container = client.containers.get(dockerexecutionlogs)
     
     print "Sleeping for 5 seconds to fetch logs"
     #print container.logs()
     
-    s = open("dlogs/"+nameDfile,"w")
+    s = open("dockerexecutionlogs/"+nameDfile,"w")
     s.write(container.logs())
     
     print "Removing the container " + dPath
@@ -195,10 +195,11 @@ def executeDocker(nameDfile):
     s.close()
 
 def checkAllOutput():
-    for filepath in glob.glob('dlogs/*'):
+    for filepath in glob.glob('dockerexecutionlogs/*'):
         #print filepath
         head, filename = os.path.split(filepath)
-        checkOutput(filename)
+        if(filename == "C") :
+            checkOutput(filename)
         #print filename
         
 def checkOutput(filename):
@@ -209,8 +210,8 @@ def checkOutput(filename):
     passFile = open("testSummary/"+filename+".pass","w")
     failFile = open("testSummary/"+filename+".fail","w")
     summaryFile = open("testSummary/"+filename+".summary","w")
-    DlogFile=open("dlogs/"+filename).read()
-    f = open("bashOutput/"+filename+".out")
+    DlogFile=open("dockerexecutionlogs/"+filename).read()
+    f = open("bashOutputtocompare/"+filename+".out")
 
     for i in f.read().splitlines():
         i=i.strip()

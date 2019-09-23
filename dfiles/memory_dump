@@ -1,3 +1,0 @@
-FROM sconecuratedimages/crosscompilers
-COPY shellfiles/memory_dump.sh /
-CMD ["bash", "/memory_dump.sh"]

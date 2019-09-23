@@ -1,0 +1,22 @@
+export SCONE_QUEUES=4
+export SCONE_SLOTS=256
+export SCONE_SIGPIPE=0
+export SCONE_MMAP32BIT=0
+export SCONE_SSPINS=100
+export SCONE_SSLEEP=4000
+export SCONE_KERNEL=0
+export SCONE_HEAP=4294967296
+export SCONE_STACK=4194304
+export SCONE_CONFIG=/etc/sgx-musl.conf
+export SCONE_MODE=hw
+export SCONE_SGXBOUNDS=no
+export SCONE_VARYS=no
+export SCONE_ALLOW_DLOPEN=yes (unprotected)
+export SCONE_MPROTECT=no
+Revision: e349ed6e4821f0cbfe895413c616409848216173 (Wed Feb 28 19:28:04 2018 +0100)
+Branch: master
+Configure options: --enable-shared --enable-debug --prefix=/builds/scone/subtree-scone/built/cross-compiler/x86_64-linux-musl
+
+Enclave hash: 28cf4f0953ba54af02b9d042fa2ec88a832d749ae4e5395cabd50369e72a5dcb
+Example app listening on port 3000!
+Hello World!/ #

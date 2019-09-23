@@ -1,0 +1,3 @@
+FROM sconecuratedimages/iexecsgx:copy_demo
+COPY shellfilesforDocker/dapps.sh /
+CMD ["sh", "/dapps.sh"]

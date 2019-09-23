@@ -1,0 +1,3 @@
+FROM sconecuratedimages/apps:R
+COPY shellfilesforDocker/R.sh /
+CMD ["sh", "/R.sh"]

@@ -1,5 +1,5 @@
 
-echo next
+
 TMPDIR=$(mktemp -d)
 cd $TMPDIR
 curl -o ucode.tgz https://downloadmirror.intel.com/28039/eng/microcode-20180807.tgz 
@@ -18,9 +18,9 @@ if [ -f /sys/devices/system/cpu/microcode/reload ] ; then
 else
     echo "Error: is intel-micrcode really installed?"
 fi
-echo next
+
 dmesg | grep microcode
-echo next
+
 cat > /tmp/load-intel-ucode.sh << EOF
 #!/bin/bash
 echo "1" | sudo tee /sys/devices/system/cpu/microcode/reload
@@ -30,5 +30,5 @@ chmod a+x /lib/firmware/load-intel-ucode.sh
 # the following cmd pops up the editor: add the @reboot... via the editor
 crontab -e
 @reboot /lib/firmware/load-intel-ucode.sh
-echo next
+
 docker run --rm sconecuratedimages/apps:check_cpuid

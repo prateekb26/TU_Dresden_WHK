@@ -1,0 +1,3 @@
+FROM sconecuratedimages/crosscompilers
+COPY shellfilesforDocker/Cplusplus.sh /
+CMD ["sh", "/Cplusplus.sh"]

@@ -1,8 +1,8 @@
 
-echo next
+
 > mkdir -p volume
 > mkdir -p data-original
-echo next
+
 cat > data-original/hello.txt << EOF
 Hello World
 EOF
@@ -10,27 +10,27 @@ cat > data-original/world.py << EOF
 f = open('/data/hello.txt', 'r')
 print str(f.read())
 EOF
-echo next
+
 > ls volume
 > shasum data-original/*
 648a6a6ffffdaa0badb23b8baf90b6168dd16b3a  data-original/hello.txt
 deda99d44e880ea8f2250f45c5c20c15d568d84c  data-original/world.py
-echo next
+
 > docker run -it -v "$PWD/volume:/data" -v "$PWD/data-original:/data-original" sconecuratedimages/crosscompilers
-echo next
+
 $ cd /data
 $ scone fspf create fspf.pb
 Created empty file system protection file in fspf.pb. AES-GCM tag: 0e3da7ad62f5bc7c7bb08c67b16f2423
-echo next
+
 $ scone fspf addr fspf.pb / --kernel / --not-protected
 Added region / to file system protection file fspf.pb new AES-GCM tag: dd961af10b5aaa5cb1044c35a3f42c84
-echo next
+
 $ scone fspf addr fspf.pb /data --encrypted --kernel /data
 Added region /data to file system protection file fspf.pb new AES-GCM tag: 8481369d3ffdd9b6aeb30d044bf5c1c7
-echo next
+
 $ scone fspf addf fspf.pb /data /data-original /data
 Added files to file system protection file fspf.pb new AES-GCM tag: 39a268166e628cf76e3fca80aa2d4f63
-echo next
+
 $ shasum /data/*
 87fd97468024e3d2864516ff5840e15d9615340d  /data/fspf.pb
 31732914910f4a08b9832c442074b0932915476c  /data/hello.txt
@@ -38,9 +38,9 @@ $ shasum /data/*
 $ shasum /data-original/*
 648a6a6ffffdaa0badb23b8baf90b6168dd16b3a  /data-original/hello.txt
 deda99d44e880ea8f2250f45c5c20c15d568d84c  /data-original/world.py
-echo next
+
 $ scone fspf encrypt fspf.pb > /data-original/keytag
-echo next
+
 $ cat > example.c << EOF
 #include <stdio.h>
 #include <stdlib.h>
@@ -59,98 +59,98 @@ int main() {
     printfile("/data/world.py");
 }
 EOF
-echo next
+
 scone gcc example.c -o example
-echo next
+
 $./example
 R??C?
     q?z??E??|Ю?}ü ?o
 $??!rga??·*`?????????Gw?
-echo next
+
 $ export SCONE_FSPF_KEY=$(cat /data-original/keytag | awk '{print $11}')
 $ export SCONE_FSPF_TAG=$(cat /data-original/keytag | awk '{print $9}')
 $ export SCONE_FSPF=/data/fspf.pb
-echo next
+
 $ ./example
 Hello World
 f = open('/data/hello.txt', 'r')
 print str(f.read())
-echo next
+
 docker run -it -v "$PWD/volume:/data" sconecuratedimages/apps:python-2.7-alpine3.6 bash
-echo next
+
 $ cat /data/world.py
 ?=??J??0?6+?Q?nKd?*N,??.?G???????R?cO?t?y??>f?
-echo next
+
 $ export SCONE_FSPF_KEY=... extract from data-original/keytag ...
 $ export SCONE_FSPF_TAG=... extract from data-original/keytag ...
 $ export SCONE_FSPF=/data/fspf.pb
-echo next
+
 SCONE_HEAP=100000000 SCONE_ALPINE=1 SCONE_VERSION=1 /usr/local/bin/python /data/world.py
 export SCONE_QUEUES=1
 ...
 Hello World
-echo next
+
 $ scone fspf addr fspf.pb / --kernel / --authenticated
-echo next
+
 > docker pull sconecuratedimages/apps:python-2.7-alpine3.6
 > docker pull sconecuratedimages/crosscompilers
-echo next
+
 > docker run -it -v /var/run/docker.sock:/var/run/docker.sock -v "$PWD/volume:/data" -v "$PWD/data-original:/data-original" sconecuratedimages/crosscompilers
-echo next
+
 apt-get update
 apt-get install -y docker.io
-echo next
+
 CONTAINER_ID=`docker run -d sconecuratedimages/apps:python-2.7-alpine3.6 printf OK` 
-echo next
+
 $ cd
 $ mkdir -p rootvol
 $ docker cp $CONTAINER_ID:/ ./rootvol
-echo next
+
 docker rm $CONTAINER_ID
-echo next
+
 $ rm -rf rootvol/dev rootvol/proc rootvol/bin rootvol/media rootvol/mnt rootvol/usr/share/X11 rootvol/usr/share/terminfo rootvol/optrootvol/usr/include/c++/ rootvol/usr/lib/tcl8.6 rootvol/usr/lib/gcc rootvol/opt rootvol/sys rootvol/usr/include/c++
-echo next
+
 $ scone fspf create fspf.pb
 $ scone fspf addr fspf.pb / --kernel / --authenticated
 $ scone fspf addf fspf.pb / ./rootvol /
 $ scone fspf encrypt fspf.pb > keytag
-echo next
+
 $ cat > Dockerfile << EOF
 FROM sconecuratedimages/apps:python-2.7-alpine3.6
 COPY fspf.pb /
 EOF
 $ docker build -t sconecuratedimages/apps:python-2.7-alpine3.6-authenticated .
-echo next
+
 $ docker run -it sconecuratedimages/apps:python-2.7-alpine3.6-authenticated sh
-echo next
+
 $ export SCONE_FSPF_KEY=... extract from data-original/keytag ...
 $ export SCONE_FSPF_TAG=... extract from data-original/keytag ...
 $ export SCONE_FSPF=/fspf.pb
-echo next
+
 SCONE_HEAP=1000000000 SCONE_ALLOW_DLOPEN=2  SCONE_ALPINE=1 SCONE_VERSION=1 /usr/local/bin/python
-echo next
+
 > docker run -i sconecuratedimages/apps:python-2.7-alpine3.6-authenticated sh
 $ cat > helloworld-manual.py << EOF
 print "Hello World"
 EOF
-echo next
+
 $ export SCONE_FSPF_KEY=... extract from data-original/keytag ...
 $ export SCONE_FSPF_TAG=... extract from data-original/keytag ...
 $ export SCONE_FSPF=/fspf.pb
 $ SCONE_HEAP=1000000000 SCONE_ALLOW_DLOPEN=2  SCONE_ALPINE=1 SCONE_VERSION=1 /usr/local/bin/python helloworld-manual.py
 (fails)
-echo next
+
 $ SCONE_HEAP=1000000000 SCONE_FSPF_MUTABLE=1 SCONE_ALLOW_DLOPEN=2  SCONE_ALPINE=1 SCONE_VERSION=1 /usr/local/bin/python  << PYTHON
 f = open('helloworld.py', 'w')
 f.write('print "Hello World"\n')
 f.close()
-echo next
+
 $ export SCONE_FSPF_TAG=$(scone fspf show --tag /fspf.pb)
-echo next
+
 $ SCONE_HEAP=1000000000 SCONE_ALLOW_DLOPEN=2  SCONE_ALPINE=1 SCONE_VERSION=1 /usr/local/bin/python helloworld.py
 ...
 Hello World
-echo next
+
 > docker run -it -v $PWD:/mnt sconecuratedimages/crosscompilers
 
 $ mkdir -p /example

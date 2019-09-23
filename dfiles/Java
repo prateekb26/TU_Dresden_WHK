@@ -1,3 +1,0 @@
-FROM sconecuratedimages/apps:8-jdk-alpine
-COPY shellfiles/Java.sh /
-CMD ["bash", "/Java.sh"]

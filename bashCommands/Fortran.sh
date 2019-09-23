@@ -1,10 +1,10 @@
 
-echo next
+
 docker pull sconecuratedimages/crosscompilers
 docker run --device=/dev/isgx -it sconecuratedimages/crosscompilers
-echo next
+
 scone gfortran --help
-echo next
+
 cat > gcd.f << EOF
 *     euclid.f (FORTRAN 77)
 *     Find greatest common divisor using the Euclidean algorithm
@@ -39,9 +39,9 @@ cat > gcd.f << EOF
         RETURN
       END
 EOF
-echo next
+
 scone gfortran gcd.f -o gcd
-echo next
+
 SCONE_VERSION=1 ./gcd << EOF
 10
 15

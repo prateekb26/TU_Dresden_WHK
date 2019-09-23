@@ -1,5 +1,5 @@
 
-echo next
+
 mkdir -p VAULT-DEMO
 cd VAULT-DEMO
 cat > docker-compose.yml <<EOF
@@ -27,15 +27,15 @@ services:
         depends_on:
          - vault
 EOF
-echo next
+
 docker-compose up
-echo next
+
 docker-compose down
-echo next
+
 docker-compose run scone-vault-nginx sh
-echo next
+
  cd /build_dir/
-echo next
+
  ./install-deps.sh
-echo next
+
 ./bench.sh

@@ -1,30 +1,30 @@
 
-echo next
+
 > docker image ls sconecuratedimages/*
 REPOSITORY                          TAG                    IMAGE ID            CREATED             SIZE
 sconecuratedimages/crosscompilers   latest                 dff7975b7f32        7 hours ago         1.57GB
 sconecuratedimages/crosscompilers   scone                  dff7975b7f32        7 hours ago         1.57GB
-echo next
+
 > git clone https://github.com/christoffetzer/SCONE_TUTORIAL.git
-echo next
+
 > cd SCONE_TUTORIAL/HelloWorld/
 > gcc hello_world.c  -o native_hello_world
 > ./native_hello_world
 Hello World
-echo next
+
 > docker run --rm --device=/dev/isgx -v "$PWD":/usr/src/myapp -w /usr/src/myapp sconecuratedimages/crosscompilers scone-gcc hello_world.c  -o sgx_hello_world
-echo next
+
 > ldd ./sgx_hello_world 
 	linux-vdso.so.1 =>  (0x00007ffcf73ad000)
 	libpthread.so.0 => /lib/x86_64-linux-gnu/libpthread.so.0 (0x00007f7c2a0e9000)
 	libc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007f7c29d1f000)
 	/lib64/ld-linux-x86-64.so.2 (0x00007f7c2a306000)
-echo next
+
 > printf "Q 1\ne 0 0 0\ns 1 0 0\n" | sudo tee /etc/sgx-musl.conf
-echo next
+
 > ./sgx_hello_world
 Hello World
-echo next
+
 > SCONE_VERSION=1 ./sgx_hello_world
 export SCONE_QUEUES=4
 export SCONE_SLOTS=256
@@ -43,11 +43,11 @@ Branch: master
 Configure options: --enable-file-prot --enable-shared --enable-debug --prefix=/scone/src/built/cross-compiler/x86_64-linux-musl
 
 Hello World
-echo next
+
 > docker run --rm  -v "$PWD":/usr/src/myapp -w /usr/src/myapp sconecuratedimages/muslgcc gcc  hello_world.c -o dyn_hello_world
-echo next
+
 > docker run --rm  -v "$PWD":/usr/src/myapp -w /usr/src/myapp sconecuratedimages/muslgcc ./dyn_hello_world
-echo next
+
 > docker run --rm  -v "$PWD":/usr/src/myapp -e SCONE_MODE=HW -e SCONE_ALPINE=1 -e SCONE_VERSION=1 sconecuratedimages/crosscompilers:runtime /usr/src/myapp/dyn_hello_world
 export SCONE_QUEUES=4
 export SCONE_SLOTS=256
@@ -62,10 +62,10 @@ export SCONE_MODE=hw
 Configure parameters: 
 1.1.15
 Hello World
-echo next
+
 > docker run --rm  -v "$PWD":/usr/src/myapp -e SCONE_MODE=HW -e SCONE_ALPINE=1 -e SCONE_VERSION=1 sconecuratedimages/crosscompilers:runtime /usr/src/myapp/dyn_hello_world
 [Error] Could not create enclave: Error opening SGX device
-echo next
+
 > docker run --rm  -v "$PWD":/usr/src/myapp -e SCONE_MODE=SIM -e SCONE_ALPINE=1 -e SCONE_VERSION=1 sconecuratedimages/crosscompilers:runtime /usr/src/myapp/dyn_hello_world
 export SCONE_QUEUES=4
 export SCONE_SLOTS=256
@@ -80,7 +80,7 @@ export SCONE_MODE=sim
 Configure parameters: 
 1.1.15
 Hello World
-echo next
+
 > docker run --rm  -v "$PWD":/usr/src/myapp -e SCONE_MODE=AUTO -e SCONE_ALPINE=1 -e SCONE_VERSION=1 sconecuratedimages/crosscompilers:runtime 
 export SCONE_QUEUES=4
 export SCONE_SLOTS=256
@@ -95,7 +95,7 @@ export SCONE_MODE=sim
 Configure parameters:
 1.1.15
 HelloWorld
-echo next
+
 > docker run --cap-add SYS_PTRACE -it --rm --device=/dev/isgx -v "$PWD":/usr/src/myapp -w /usr/src/myapp sconecuratedimages/crosscompilers strace  -f /usr/src/myapp/sgx_hello_world > strace.log
 Hello World
 head strace.log

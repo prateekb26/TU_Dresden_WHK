@@ -1,0 +1,3 @@
+FROM sconecuratedimages/crosscompilers
+COPY shellfilesforDocker/SCONE_Fileshield.sh /
+CMD ["sh", "/SCONE_Fileshield.sh"]

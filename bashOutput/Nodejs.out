@@ -1,2 +1,0 @@
-apk add --no-cache nodejs-npm
-export SCONE_HEAP=1G
