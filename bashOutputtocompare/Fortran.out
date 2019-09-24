@@ -13,11 +13,9 @@ export SCONE_SGXBOUNDS=no
 export SCONE_VARYS=no
 export SCONE_ALLOW_DLOPEN=no
 export SCONE_MPROTECT=no
-Revision: b1e014e64b4d332a51802580ec3252370ffe44bb (Wed May 30 15:17:05 2018 +0200)
 Branch: master
 Configure options: --enable-shared --enable-debug --prefix=/mnt/ssd/franz/subtree-scone2/built/cross-compiler/x86_64-linux-musl
 
-Enclave hash: e9c60984724c6d5ffc8cc8a6ba4377910e63c8534ef24b87d0727e712809ba50
  A?
  B?
  The GCD of          10  and          15  is           5 .

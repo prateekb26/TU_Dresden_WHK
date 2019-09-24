@@ -1,0 +1,17 @@
+rustc 1.20.0 (f3d6973f4 2017-08-27)
+export SCONE_QUEUES=4
+export SCONE_SLOTS=256
+export SCONE_SIGPIPE=0
+export SCONE_MMAP32BIT=0
+export SCONE_SSPINS=100
+export SCONE_SSLEEP=4000
+export SCONE_KERNEL=0
+export SCONE_HEAP=67108864
+export SCONE_CONFIG=/etc/sgx-musl.conf
+export SCONE_MODE=hw
+export SCONE_SGXBOUNDS=no
+export SCONE_VARYS=no
+export SCONE_ALLOW_DLOPEN=no
+export SCONE_ALLOW_DLOPEN2=no
+
+Hello, world!

@@ -1,0 +1,7 @@
+[31mfatal:  'command /opt/scone/scone-cli/../bin/scone-rustc does not exist - scone not correctly/completely installed - exiting. (stack=131 0)' [00m (Line numer: '131')
+[31mfatal:  'command /opt/scone/scone-cli/../bin/scone-rustc does not exist - scone not correctly/completely installed - exiting. (stack=131 0)' [00m (Line numer: '131')
+main.rs
+/Rust.sh: line 18: main: not found
+/Rust.sh: line 20: ./main: not found
+[31mfatal:  'command /opt/scone/scone-cli/../bin/scone-cargo does not exist - scone not correctly/completely installed - exiting. (stack=131 0)' [00m (Line numer: '131')
+/Rust.sh: line 24: scone-cargo: not found

@@ -7,6 +7,16 @@ import docker
 import shutil
 import time
 
+#Scone Related
+#Expected output not found in the file as === export SCONE_KERNEL=0
+#Expected output not found in the file as === export SCONE_STACK=81920
+#Expected output not found in the file as === export SCONE_SGXBOUNDS=no
+#Expected output not found in the file as === export SCONE_VARYS=no
+#Expected output not found in the file as === Configure options: --enable-shared --enable-debug --prefix=/mnt/ssd/franz/subtree-scone2/built/cross-compiler/x86_64-linux-musl
+
+
+mdFilename = "Rust"
+
 def setup():
     createDirectory("bashCommands")
     createDirectory("shellfilesforDocker")
@@ -135,6 +145,8 @@ def createFiles(name):
             makeDockerFile(name,m.group(1))
         if(i.find("docker") == -1):
            s.write(i+"\n")
+        if(i.find("FirstExampleEnds") == 0):
+            break
     s.close()
     f.close()
     #executeDocker(name)
@@ -158,7 +170,7 @@ def executeAllDockerfiles():
         #print filepath
         head, filename = os.path.split(filepath)
         #print filename
-        if(filename == "C") :
+        if(filename == mdFilename) :
             executeDocker(filename)
 
 def executeDocker(nameDfile):
@@ -198,7 +210,7 @@ def checkAllOutput():
     for filepath in glob.glob('dockerexecutionlogs/*'):
         #print filepath
         head, filename = os.path.split(filepath)
-        if(filename == "C") :
+        if(filename == mdFilename) :
             checkOutput(filename)
         #print filename
         

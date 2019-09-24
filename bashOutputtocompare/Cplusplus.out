@@ -13,11 +13,9 @@ export SCONE_SGXBOUNDS=no
 export SCONE_VARYS=no
 export SCONE_ALLOW_DLOPEN=no
 export SCONE_MPROTECT=no
-Revision: b1e014e64b4d332a51802580ec3252370ffe44bb (Wed May 30 15:17:05 2018 +0200)
 Branch: master
 Configure options: --enable-shared --enable-debug --prefix=/mnt/ssd/franz/subtree-scone2/built/cross-compiler/x86_64-linux-musl
 
-Enclave hash: ebf98279a2cae1179366f8b5a0fc007decdc5dd3dec2b92ddbf121c2e2bf22f4
 The square root of 0 is 0
 The square root of 1 is 1
 The square root of 2 is 1.41421

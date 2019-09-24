@@ -1,0 +1,3 @@
+FROM sconecuratedimages/crosscompilers
+COPY shellfilesforDocker/Rust.sh /
+CMD ["sh", "/Rust.sh"]

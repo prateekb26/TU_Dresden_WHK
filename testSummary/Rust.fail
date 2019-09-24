@@ -1,0 +1,16 @@
+Expected output not found in the file as === rustc 1.20.0 (f3d6973f4 2017-08-27)
+Expected output not found in the file as === export SCONE_QUEUES=4
+Expected output not found in the file as === export SCONE_SLOTS=256
+Expected output not found in the file as === export SCONE_SIGPIPE=0
+Expected output not found in the file as === export SCONE_MMAP32BIT=0
+Expected output not found in the file as === export SCONE_SSPINS=100
+Expected output not found in the file as === export SCONE_SSLEEP=4000
+Expected output not found in the file as === export SCONE_KERNEL=0
+Expected output not found in the file as === export SCONE_HEAP=67108864
+Expected output not found in the file as === export SCONE_CONFIG=/etc/sgx-musl.conf
+Expected output not found in the file as === export SCONE_MODE=hw
+Expected output not found in the file as === export SCONE_SGXBOUNDS=no
+Expected output not found in the file as === export SCONE_VARYS=no
+Expected output not found in the file as === export SCONE_ALLOW_DLOPEN=no
+Expected output not found in the file as === export SCONE_ALLOW_DLOPEN2=no
+Expected output not found in the file as === Hello, world!

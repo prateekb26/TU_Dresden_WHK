@@ -1,0 +1,78 @@
+Expected output not found in the file as === export SCONE_QUEUES=4
+Expected output not found in the file as === export SCONE_SLOTS=256
+Expected output not found in the file as === export SCONE_SIGPIPE=0
+Expected output not found in the file as === export SCONE_MMAP32BIT=0
+Expected output not found in the file as === export SCONE_SSPINS=100
+Expected output not found in the file as === export SCONE_SSLEEP=4000
+Expected output not found in the file as === export SCONE_KERNEL=0
+Expected output not found in the file as === export SCONE_HEAP=1073741824
+Expected output not found in the file as === export SCONE_STACK=4194304
+Expected output not found in the file as === export SCONE_CONFIG=/etc/sgx-musl.conf
+Expected output not found in the file as === export SCONE_ESPINS=10000
+Expected output not found in the file as === export SCONE_MODE=hw
+Expected output not found in the file as === export SCONE_SGXBOUNDS=no
+Expected output not found in the file as === export SCONE_VARYS=no
+Expected output not found in the file as === export SCONE_ALLOW_DLOPEN=yes (unprotected)
+Expected output not found in the file as === export SCONE_MPROTECT=no
+Expected output not found in the file as === Revision: d0afc0f23819476cbc7d944a20e91d79fcb6f9ab (Thu Aug 16 16:45:05 2018 +0200)
+Expected output not found in the file as === Branch: new-docker-images-cf (dirty)
+Expected output not found in the file as === Configure options: --enable-shared --enable-debug --prefix=/home/christof/GIT/subtree-scone/built/cross-compiler/x86_64-linux-musl
+Expected output not found in the file as === Enclave hash: 71e730d77fcae6fd37b80cd8669f2d75b8e58dbba80afa48929ae817bf263bb0
+Expected output not found in the file as === Warning message:
+Expected output not found in the file as === failed to set alternate signal stack
+Expected output not found in the file as === R version 3.5.0 (2018-04-23) -- "Joy in Playing"
+Expected output not found in the file as === Copyright (C) 2018 The R Foundation for Statistical Computing
+Expected output not found in the file as === Platform: x86_64-pc-linux-gnu (64-bit)
+Expected output not found in the file as === a <- 42
+Expected output not found in the file as === A <- a * 2  # R is case sensitive
+Expected output not found in the file as === print(a)
+Expected output not found in the file as === cat(A, "\n") # "84" is concatenated with "\n"
+Expected output not found in the file as === if(A>a) # true, 84 > 42
+Expected output not found in the file as === {
+Expected output not found in the file as === cat(A, ">", a, "\n")
+Expected output not found in the file as === }
+Expected output not found in the file as === 84 > 42
+Expected output not found in the file as === #utility functions
+Expected output not found in the file as === readinteger <- function()
+Expected output not found in the file as === {
+Expected output not found in the file as === n <- readline(prompt="Enter an integer: ")
+Expected output not found in the file as === if(!grepl("^[0-9]+$",n))
+Expected output not found in the file as === {
+Expected output not found in the file as === return(readinteger())
+Expected output not found in the file as === }
+Expected output not found in the file as === return(as.integer(n))
+Expected output not found in the file as === }
+Expected output not found in the file as === # real program start here
+Expected output not found in the file as === num <- round(runif(1) * 100, digits = 0)
+Expected output not found in the file as === guess <- -1
+Expected output not found in the file as === cat("Guess a number between 0 and 100.\n")
+Expected output not found in the file as === while(guess != num)
+Expected output not found in the file as === {
+Expected output not found in the file as === guess <- readinteger()
+Expected output not found in the file as === if (guess == num)
+Expected output not found in the file as === {
+Expected output not found in the file as === cat("Congratulations,", num, "is right.\n")
+Expected output not found in the file as === }
+Expected output not found in the file as === else if (guess < num)
+Expected output not found in the file as === {
+Expected output not found in the file as === cat("It's bigger!\n")
+Expected output not found in the file as === }
+Expected output not found in the file as === else if(guess > num)
+Expected output not found in the file as === {
+Expected output not found in the file as === cat("It's smaller!\n")
+Expected output not found in the file as === }
+Expected output not found in the file as === }
+Expected output not found in the file as === Enter an integer: 50
+Expected output not found in the file as === It's bigger!
+Expected output not found in the file as === Enter an integer: 75
+Expected output not found in the file as === It's bigger!
+Expected output not found in the file as === Enter an integer: 87
+Expected output not found in the file as === It's smaller!
+Expected output not found in the file as === Enter an integer: 82
+Expected output not found in the file as === It's smaller!
+Expected output not found in the file as === Enter an integer: 78
+Expected output not found in the file as === It's bigger!
+Expected output not found in the file as === Enter an integer: 80
+Expected output not found in the file as === It's bigger!
+Expected output not found in the file as === Enter an integer: 81
+Expected output not found in the file as === Congratulations, 81 is right.
