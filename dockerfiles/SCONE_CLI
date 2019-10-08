@@ -1,0 +1,3 @@
+FROM sconecuratedimages/sconecli
+COPY shellfilesforDocker/SCONE_CLI.sh /
+CMD ["sh", "/SCONE_CLI.sh"]

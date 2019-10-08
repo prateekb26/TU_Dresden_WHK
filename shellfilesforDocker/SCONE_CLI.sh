@@ -1,18 +1,18 @@
 
 
 
-$ scone --help
+scone --help
 
-$ scone host --help
+scone host --help
 
-$ scone host install --help
+scone host install --help
 
-$ scone <TAB>
+scone tab
 
-$ scone host <TAB>
+scone host tab
 
-$ scone host install <TAB>
+scone host install tab
 
-$ scone host install -n<TAB>
+scone host install -n tab
 
-$ scone host install -name
+scone host install -name

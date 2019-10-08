@@ -1,0 +1,50 @@
+Expected output found as ===Usage: scone [OBJECT|--version|--help]
+Expected output found as ===Install, operate and check a Secure CONtainer Environment.
+Expected output found as ===Commands:
+Expected output found as ===host      install and/or check patched SGX driver and Docker engine.
+Expected output found as ===cas       configuration and attestation service.
+Expected output found as ===fspf      file system protection.
+Expected output found as ===swarm     manage docker swarm
+Expected output found as ===service   a thin wrapper around docker service commands
+Expected output found as ===session   manages key namespaces
+Expected output found as ===Options:
+Expected output found as ===-h, --help    show this help message
+Expected output found as ===-v, --version show software version
+Expected output found as ===Usage: scone host [COMMAND|--version|--help]
+Expected output found as ===installs patched SGX driver and patched Docker Engine on a host.
+Expected output found as ===Commands:
+Expected output found as ===check     checks that host is properly installed (patched docker engine and patched sgx driver)
+Expected output found as ===install   installs SGX driver and docker engine
+Expected output found as ===reboot    reboots reboots machine (- which is given by --name)
+Expected output found as ===uninstall uninstalls SGX driver and patched docker engine
+Expected output found as ===swarm     reinitialize swarm parameters
+Expected output found as ===Options:
+Expected output found as ===--help             print usage
+Expected output found as ===--verbose          print verbose messages
+Expected output found as ===--debug            print debug messages
+Expected output found as ===--join MANAGER     join swarm managed by MANAGER
+Expected output found as ===--as-manager       join swarm as manager (--join set) or create new swarm
+Expected output found as ===--name HOST        host to be installed
+Expected output found as ===--force            reboot host if needed to replace existing SGX driver
+Expected output found as ===Example: to install a host and make this the manager of a new swarm
+Expected output found as ===scone host  install --verbose --name alice --as-manager
+Expected output found as ===Example: to install a host and join as a worker an existing swarm managed by alice
+Expected output found as ===scone host  check   --verbose --name bob --join alice
+Expected output found as ===Example: to install a host and join as a new manager an existing swarm managed by alice
+Expected output found as ===scone host  check   --verbose --name bob --join alice --as-manager
+Expected output found as ===Usage: scone host install [OPTIONS]
+Expected output found as ===Install patched SGX driver and patched Docker Engine is installed
+Expected output found as ===Options:
+Expected output found as ===--name HOST        host to be installed (required)
+Expected output found as ===--join MANAGER     join swarm managed by MANAGER
+Expected output found as ===--as-manager       join swarm as manager if --join set or create new swarm
+Expected output found as ===--force            reboot host if needed to replace existing SGX driver
+Expected output found as ===--help             print usage
+Expected output found as ===--verbose          print verbose messages
+Expected output found as ===--debug            print debug messages
+Expected output found as ===Example: to install and force a reboot if needed (old sgx driver in use) and create a new swarm, execute
+Expected output found as ===scone host  install --verbose --force --name alice --as-manager
+Expected output found as ===Example: to install and join a swarm managed by bob
+Expected output found as ===scone host  check --verbose --name alice --join bob
+Expected output found as ===Example: to install host alice without joining a swarm, execute
+Expected output found as ===scone host  install --verbose --name alice

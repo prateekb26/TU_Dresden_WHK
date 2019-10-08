@@ -15,7 +15,7 @@ import time
 #Expected output not found in the file as === Configure options: --enable-shared --enable-debug --prefix=/mnt/ssd/franz/subtree-scone2/built/cross-compiler/x86_64-linux-musl
 
 
-mdFilename = "Rust"
+mdFilename = "SCONE_CLI"
 
 def setup():
     createDirectory("bashCommands")
