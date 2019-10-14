@@ -17,6 +17,7 @@ import time
 
 mdFilename = "SCONE_CLI"
 
+#This will create Directories
 def setup():
     createDirectory("bashCommands")
     createDirectory("shellfilesforDocker")
@@ -24,14 +25,16 @@ def setup():
     createDirectory("dockerexecutionlogs")
     createDirectory("bashOutputtocompare")
     createDirectory("testSummary")
-    
+
+#This will remove Directories
 def cleanup():
     removeDirectory("bashCommands")
     removeDirectory("shellfilesforDocker")
     removeDirectory("dockerfiles")
     removeDirectory("dockerexecutionlogs")
     removeDirectory("bashOutputtocompare")
-#Function to create Directory if not existing
+    
+#Function to actually create Directory if not existing based on the parameter
 def createDirectory(dirName): 
     try:
     # Create target Directory
@@ -42,7 +45,8 @@ def createDirectory(dirName):
             print("Directory " , dirName ,  " already exists")
         else:
             raise
-        
+
+#Function to actually remove Directory based on the parameter
 def removeDirectory(dirName):
     try:
         shutil.rmtree(dirName)
@@ -100,7 +104,8 @@ def extractCode(rawContent):
             count = count + 1
             code = code + "\n"
     return code
-    
+
+#Function to extract output of bash commands
 #If bash is not found then only enter the loop and if bash is found set markbash flag =1
 #if instead only ''' is found and it is beginning of the block and bash is not marked then we found correct block
 #if beginning is marked and bash is not marked then we start copying the output until we find '''
@@ -125,7 +130,7 @@ def extractOutput(rawContent):
             markbash = 1;
     return tcode
 
-
+#Function to extract actual shell code from extracted bash code 
 def getAllExtractedShellDockerfiles():
 
     for filepath in glob.glob('bashCommands/*.sh'):
@@ -151,6 +156,7 @@ def createFiles(name):
     f.close()
     #executeDocker(name)
     
+#Function to actually create Docker file based on Paramters 
 def makeDockerFile(dockerFile,rep):
     n = open("dockerfiles/"+dockerFile, "w")
     n.write("FROM "+ rep+"\n")
@@ -164,6 +170,7 @@ def makeDockerFile(dockerFile,rep):
 #Fortan.me
 #
 
+#Function to execute all docker files
 def executeAllDockerfiles():
 
     for filepath in glob.glob('dockerfiles/*'):
@@ -173,6 +180,7 @@ def executeAllDockerfiles():
         if(filename == mdFilename) :
             executeDocker(filename)
 
+#Function to actual execute docker file based on parameter
 def executeDocker(nameDfile):
     
     client = docker.from_env()
@@ -206,6 +214,7 @@ def executeDocker(nameDfile):
     client.containers.prune()
     s.close()
 
+#Function to check actual vs expected output
 def checkAllOutput():
     for filepath in glob.glob('dockerexecutionlogs/*'):
         #print filepath
@@ -214,6 +223,7 @@ def checkAllOutput():
             checkOutput(filename)
         #print filename
         
+#Function to check actual vs expected output based on Parameters
 def checkOutput(filename):
     passflag=1
     numberOfTestcases =0
@@ -256,7 +266,8 @@ def checkOutput(filename):
     passFile.close()
     failFile.close()
     summaryFile.close()
-    
+
+#Main to call all Functions
 def main():
     setup()
     getAllFiles()
@@ -266,6 +277,7 @@ def main():
     
     #executeDocker("C")
 
+#Uncomment the cleanup if you really want cleanup
     #cleanup()
      
 if __name__== "__main__":
